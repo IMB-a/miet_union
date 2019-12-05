@@ -9,7 +9,7 @@ chardet==3.0.4
 colorama==0.4.1
 coverage==4.5.4
 decorator==4.4.0
-Django==2.2.6
+Django==2.2.8
 django-admin-tools==0.8.1
 django-bootstrap-breadcrumbs==0.9.1
 django-summernote==0.8.11.4
