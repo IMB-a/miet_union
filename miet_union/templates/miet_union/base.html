@@ -3,6 +3,7 @@
 {% load miet_union_extras %}
 {% load django_bootstrap_breadcrumbs %}
 <html lang="en">
+
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,13 +19,15 @@
   {% endblock %}
   <title>{% block title%}Новостной портал профкома института МИЭТ{% endblock%}</title>
 </head>
+
 <body>
   <header>
     <div class="bottom-menu">
       <div class="container">
         <a class="menu-nav-icon" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
         <ul class="main-menu" id="main-menu">
-          <li class="drop-down"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white.png'%}" style="width: 60px"></a>
+          <li class="drop-down"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white.png'%}"
+                style="width: 60px"></a>
           </li>
           <li class="drop-down" style="margin-left: 30px"><a href="{% url 'home' %}">Главная<i class=""></i></a>
           </li>
@@ -57,8 +60,13 @@
             </ul>
           </li>
           {% if user.is_authenticated %}
-          <li class="drop-down" style="float: right;"><a>{{ user.first_name }}<i
-                class="ion-chevron-down"></i></a>
+          <li class="drop-down" style="float: right;"><a>
+              {% if user.first_name %}
+              {{ user.first_name }}
+              {% else %}
+              Имя не указано
+              {% endif %}
+              <i class="ion-chevron-down"></i></a>
             {% else %}
           <li class="drop-down" style="float: right;"><a>Гость<i class="ion-chevron-down"></i></a>
             {% endif %}
@@ -90,67 +98,69 @@
   {% block content%}
   {% endblock%}
 
-	<footer class="bg-191 color-white bg-primary pt-50 font-11">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-2 col-md-8 col-sm-8">	
-					<h5 class="f-title"><b>Студенту</b></h5>
-					<ul class="mb-30 list-hover list-block list-a-ptb-5">
-						<li><a href="{% url 'social_card' %}">Соц. карта</a></li>
-						<li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
-					</ul>
-				</div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-8 col-sm-8">	
-					<h5 class="f-title"><b>Мат. Помощь</b></h5>
-					<ul class="mb-30 list-hover list-block list-a-ptb-5">
-						<li><a href="{% url 'money_help_for_students' %}">Студенту</a></li>
+  <footer class="bg-191 color-white bg-primary pt-50 font-11">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2 col-md-8 col-sm-8">
+          <h5 class="f-title"><b>Студенту</b></h5>
+          <ul class="mb-30 list-hover list-block list-a-ptb-5">
+            <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
+            <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
+          </ul>
+        </div><!-- col-sm-4 -->
+        <div class="col-lg-2 col-md-8 col-sm-8">
+          <h5 class="f-title"><b>Мат. Помощь</b></h5>
+          <ul class="mb-30 list-hover list-block list-a-ptb-5">
+            <li><a href="{% url 'money_help_for_students' %}">Студенту</a></li>
             <li><a href="{% url 'money_help_for_graduate_students' %}">Аспиранту</a></li>
             <li><a href="{% url 'money_help_for_workers' %}">Сотруднику</a></li>
-					</ul>
-				</div><!-- col-sm-4 -->				
-				<div class="col-lg-3 col-md-8 col-sm-8">	
-					<h5 class="f-title"><b>Документы</b></h5>
-					<ul class="mb-30 list-hover list-block list-a-ptb-5">
-						<li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
-						<li><a href="{% url 'normative_documents' %}">Нормативные документы</a></li>
-						<li><a href="{% url 'commissions' %}">Комиссии профкома</a></li>
-						<li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
-					</ul>
-				</div><!-- col-sm-4 -->				
-				<div class="col-lg-2 col-md-8 col-sm-8">	
-					<h5 class="f-title"><b>О нас</b></h5>
-					<ul class="mb-30 list-hover list-block list-a-ptb-5">
-						<li><a href="{% url 'prof_com' %}">О профкоме</a></li>
-						<li><a href="{% url 'prof_souz' %}">О профсоюзе</a></li>
-						<li><a href="{% url 'our_team' %}">Сотрудники</a></li>
-					</ul>
-				</div><!-- col-sm-4 -->
-        <div class="col-lg-3 col-md-8 col-sm-8">	
-					<a href="{% url 'home' %}" title="Домашнаяя страница"><img src="{% static 'images/emblema_white.png'%}" style="width: 70%"></a>
-				</div><!-- col-sm-4 -->						
-			</div><!-- row -->		
-			<div class="mt-20 brdr-ash-1 opacty-4"></div>			
-			<div class="text-center ptb-30">
-				<div class="row">
-					<div class="col-sm-3">
-						 <p class="text-md-center font-9 pt-5 mtb-5" style="font-size: 15px;">
+          </ul>
+        </div><!-- col-sm-4 -->
+        <div class="col-lg-3 col-md-8 col-sm-8">
+          <h5 class="f-title"><b>Документы</b></h5>
+          <ul class="mb-30 list-hover list-block list-a-ptb-5">
+            <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
+            <li><a href="{% url 'normative_documents' %}">Нормативные документы</a></li>
+            <li><a href="{% url 'commissions' %}">Комиссии профкома</a></li>
+            <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
+          </ul>
+        </div><!-- col-sm-4 -->
+        <div class="col-lg-2 col-md-8 col-sm-8">
+          <h5 class="f-title"><b>О нас</b></h5>
+          <ul class="mb-30 list-hover list-block list-a-ptb-5">
+            <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
+            <li><a href="{% url 'prof_souz' %}">О профсоюзе</a></li>
+            <li><a href="{% url 'our_team' %}">Сотрудники</a></li>
+          </ul>
+        </div><!-- col-sm-4 -->
+        <div class="col-lg-3 col-md-8 col-sm-8">
+          <a href="{% url 'home' %}" title="Домашнаяя страница"><img src="{% static 'images/emblema_white.png'%}"
+              style="width: 70%"></a>
+        </div><!-- col-sm-4 -->
+      </div><!-- row -->
+      <div class="mt-20 brdr-ash-1 opacty-4"></div>
+      <div class="text-center ptb-30">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="text-md-center font-9 pt-5 mtb-5" style="font-size: 15px;">
               &copy; <script>
                 document.write(new Date().getFullYear());
               </script> MIET
             </p>
-					</div><!-- col-sm-3 -->			
-					<div class="col-sm-5">
-						<p class="mtb-10">Подписывайтесь на наши социальные сети</p>
-					</div><!-- col-sm-3 -->				
-					<div class="col-sm-4">
-						<ul class="mtb-10 font-12 list-radial-35 list-li-mlr-3">
-							<li><a href="https://www.instagram.com/profcom_miet/"><i class="ion-social-instagram"></i></a></li>
-							<li><a href="https://www.youtube.com/channel/UCheXK8TJadYHM_fOzFM-a7Q"><i class="ion-social-youtube"></i></a></li>
-						</ul>
-					</div><!-- col-sm-3 -->
-				</div><!-- row -->
-			</div><!-- text-center -->
-		</div><!-- container -->
+          </div><!-- col-sm-3 -->
+          <div class="col-sm-5">
+            <p class="mtb-10">Подписывайтесь на наши социальные сети</p>
+          </div><!-- col-sm-3 -->
+          <div class="col-sm-4">
+            <ul class="mtb-10 font-12 list-radial-35 list-li-mlr-3">
+              <li><a href="https://www.instagram.com/profcom_miet/"><i class="ion-social-instagram"></i></a></li>
+              <li><a href="https://www.youtube.com/channel/UCheXK8TJadYHM_fOzFM-a7Q"><i
+                    class="ion-social-youtube"></i></a></li>
+            </ul>
+          </div><!-- col-sm-3 -->
+        </div><!-- row -->
+      </div><!-- text-center -->
+    </div><!-- container -->
   </footer>
   <!-- SCIPTS -->
   <script src="{% static 'plugin-frameworks/jquery-3.2.1.min.js' %}"></script>
@@ -158,4 +168,5 @@
   <script src="{% static 'plugin-frameworks/bootstrap.js' %}"></script>
   <script src="{% static 'common/scripts.js' %}"></script>
 </body>
+
 </html>
