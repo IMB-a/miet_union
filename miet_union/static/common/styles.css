@@ -31,7 +31,7 @@
 1. PRIMARY STYLES
 --------------------------------- */
 
-html{ font-size: 100%; overflow-x: hidden; width: 100%; margin: 0px;  padding: 0px; touch-action: manipulation; }
+html{ font-size: 100%; overflow-x: hidden; width: 100%; height: 100%; margin: 0px;  padding: 0px; touch-action: manipulation; }
 
 
 body{ font-size: 14px; font-family: 'Roboto', sans-serif; width: 100%; height: 100%; margin: 0; font-weight: 400;
@@ -796,6 +796,7 @@ section{ padding: 50px 0; }
 .quote-primary{ padding: 10px 20px; border-left: 2px solid #0f45c7; }
 
 
+footer { position: sticky; top: 100%; }
 footer p{ color: #fff; }
 footer a:focus,
 footer a:hover{ color: #fff; }
