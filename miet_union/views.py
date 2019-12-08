@@ -124,21 +124,36 @@ def error_500(request):
 def money_help_for_students(request):
     form = StudentMoneyForm(request.POST or None)
     if form.is_valid():
-        fio = request.POST.get('ФИО')
-        group = request.POST.get('Группа')
-        addr = request.POST.get('Адрес_проживания')
-        reason = request.POST.get('Причина')
-        daymonth = request.POST.get('Дата')
-        year = request.POST.get('Год')
-        ser = request.POST.get('Серия_Паспорта')
-        num = request.POST.get('Номер_Паспорта')
-        pas_date = request.POST.get('Дата_Выдачи')
-        pas_place = request.POST.get('Место_Выдачи')
-        phone = request.POST.get('Телефон')
-        phone = request.POST.get('Телефон')
+        full_name = request.POST.get('full_name')
+        group = request.POST.get('group')
+        address = request.POST.get('address')
+        reason = request.POST.get('reason')
+        date_and_month_of_last_request = request.POST.get('date_and_month_of_last_request')
+        year_of_last_request = request.POST.get('year_of_last_request')
+        passport_number_part_one = request.POST.get('passport_number_part_one')
+        passport_number_part_two = request.POST.get('passport_number_part_two')
+        date_of_issue = request.POST.get('date_of_issue')
+        place_of_issue = request.POST.get('place_of_issue')
+        phone_number = request.POST.get('phone_number')
 
-        pdf_money(fio, group, addr, reason, daymonth, year, ser, num, pas_date, pas_place, phone)
-    return render(request, 'miet_union/money_help_for_students.html', {"form": form})
+        pdf_money(
+            full_name,
+            group,
+            address,
+            reason,
+            date_and_month_of_last_request,
+            year_of_last_request,
+            passport_number_part_one,
+            passport_number_part_two,
+            date_of_issue,
+            place_of_issue,
+            phone_number,
+        )
+    return render(
+        request,
+        'miet_union/money_help_for_students.html',
+        {"form": form},
+    )
 
 
 def money_help_for_graduate_students(request):
@@ -160,7 +175,7 @@ def social_card(request):
 def help_prof_org(request):
     help_prof_org_documents = HelpForProforg.objects.all()
     help_student_prof_org_documents = HelpForStudentProforg.objects.all()
-    the_main_activities_of_prof_org_documents = TheMainActivitiesOfProforg.objects.all()
+    the_main_activities_of_prof_org_documents = TheMainActivitiesOfProforg.objects.all()  # noqa
     context = {
         'help_prof_org_documents': help_prof_org_documents,
         'help_student_prof_org_documents': help_student_prof_org_documents,

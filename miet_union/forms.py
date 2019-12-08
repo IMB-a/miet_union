@@ -1,7 +1,7 @@
+import datetime
+
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 
 class UserLoginForm(forms.Form):
@@ -24,46 +24,49 @@ class UserLoginForm(forms.Form):
 
 
 class StudentMoneyForm(forms.Form):
-    ФИО = forms.CharField(
+    full_name = forms.CharField(
+        initial='(пример) Иванов Иван Иванович',
+        label='Фамилия, Имя, Отчество',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Группа = forms.CharField(
+    group = forms.CharField(
+        initial='(пример) БТС-10',
+        label='Группа',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Адрес_проживания = forms.CharField(
+    address = forms.CharField(
+        initial='(пример) ул. Юности, 11, Зеленоград, Москва',
+        label='Адрес проживания',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Причина = forms.CharField(
+    reason = forms.CharField(
+        initial='В связи с тяжелым материальным положением.',
+        label='Причины, в силу которых необходимо оказание мат. помощи',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Дата = forms.CharField(
+    date_and_month_of_last_request = forms.CharField(
+        initial='(пример) 01.01',
+        label='День и месяц последнего обращения',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    year = forms.CharField(
+    year_of_last_request = forms.CharField(
+        initial='(пример) 1900',
+        label='Год последнего обращения',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Серия_Паспорта = forms.CharField(
+    passport_number_part_one = forms.CharField(
+        initial='(пример) 0000',
+        label='Серия паспорта',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Номер_Паспорта = forms.CharField(
+    passport_number_part_two = forms.CharField(
+        initial='(пример) 000000',
+        label='Номер паспорта',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Дата_Выдачи = forms.CharField(
+    date_of_issue = forms.DateField(
+        initial=datetime.date(1900, 1, 1),
+        label='Дата выдачи паспорта',
+        widget=forms.DateInput(attrs={'class': 'form-control'}))
+    place_of_issue = forms.CharField(
+        initial='(пример) ГУ МВД РОССИИ ПО Г.МОСКВЕ',
+        label='Место выдачи паспорта',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Место_Выдачи = forms.CharField(
+    phone_number = forms.CharField(
+        min_length=11,
+        max_length=11,
+        initial='89950000000',
+        label='Номер телефона',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    Телефон = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    def clean(self, *args, **kwargs):
-        ФИО = self.cleaned_data.get('ФИО')
-        Группа = self.cleaned_data.get('Группа')
-        Адрес_проживания = self.cleaned_data.get('Адрес_проживания')
-        Причина = self.cleaned_data.get('Причина')
-        Дата = self.cleaned_data.get('Дата')
-        Год = self.cleaned_data.get('Год')
-        Серия_Паспорта = self.cleaned_data.get('Серия_Паспорта')
-        Номер_Паспорта = self.cleaned_data.get('Номер_Паспорта')
-        Дата_Выдачи = self.cleaned_data.get('Дата_Выдачи')
-        Место_Выдачи = self.cleaned_data.get('Место_Выдачи')
-        Телефон = self.cleaned_data.get('Телефон')
-
-        # if username and password:
-        #     user = authenticate(username=username, password=password)
-        #     if not user:
-        #         raise forms.ValidationError('Такого пользователя нет')
-        #     if not user.check_password(password):
-        #         raise forms.ValidationError('Неверный пароль')
-        return super(StudentMoneyForm, self).clean(*args, **kwargs)
