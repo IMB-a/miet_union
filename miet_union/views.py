@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 
 from miet_union import settings
+from .emailing import send_email
 from .forms import (
     UserLoginForm,
     StudentMoneyForm,
@@ -49,13 +49,7 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        send_mail(
-        subject='Test email',
-        message='Hello from django.',
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[email],
-        fail_silently=False,
-    )
+        send_email(email)
     context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
