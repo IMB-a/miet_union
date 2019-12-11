@@ -12,6 +12,15 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from miet_union.email_config import (
+    EMAIL_HOST,
+    EMAIL_PORT,
+    EMAIL_HOST_USER,
+    EMAIL_HOST_PASSWORD,
+    EMAIL_USE_TLS,
+    EMAIL_USE_SSL,
+)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -133,12 +142,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # admin_tools settings
 ADMIN_TOOLS_INDEX_DASHBOARD = 'miet_union.dashboard.CustomIndexDashBoard'
+
+# email settings
+EMAIL_HOST = EMAIL_HOST
+EMAIL_PORT = EMAIL_PORT
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_USE_SSL = EMAIL_USE_SSL
+EMAIL_USE_TLS = EMAIL_USE_TLS

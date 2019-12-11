@@ -2,11 +2,17 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import UserLoginForm
-from .forms import StudentMoneyForm
+from miet_union import settings
+from .emailing import send_email
+from .forms import (
+    UserLoginForm,
+    StudentMoneyForm,
+    EmailingForm,
+)
 
 from documents.models import (
     CommissionsOfProfcom,
@@ -17,6 +23,7 @@ from documents.models import (
     TheMainActivitiesOfProforg,
     UsefulLinks,
 )
+
 from news.models import News
 from ourteam.models import Worker
 
@@ -39,6 +46,12 @@ def home(request):
         'all_news': all_news,
     }
 
+    email_form = EmailingForm(request.POST or None)
+    if email_form.is_valid():
+        email = request.POST.get('email')
+        send_email(email, context)
+    context.update({'email_form': email_form})
+
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
     if form.is_valid():
@@ -52,6 +65,9 @@ def home(request):
         return redirect(rederict_path)
 
     context.update({'form': form})
+
+    
+
     return render(request, 'miet_union/home.html', context)
 
 

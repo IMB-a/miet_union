@@ -6,8 +6,10 @@ from django.contrib.auth import authenticate
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(
+        label='Имя пользователя',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(
+        label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean(self, *args, **kwargs):
@@ -70,3 +72,10 @@ class StudentMoneyForm(forms.Form):
         initial='89950000000',
         label='Номер телефона',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+class EmailingForm(forms.Form):
+    email = forms.CharField(
+        label='Введите электронную почту',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Электронная почта',}))
