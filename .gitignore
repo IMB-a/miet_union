@@ -160,3 +160,6 @@ vscode/
 
 pdf/sourses/*
 # Dynamic PDF
+
+# Email config
+email_config.py

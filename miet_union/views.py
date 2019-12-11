@@ -2,9 +2,12 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 
+from miet_union import settings
 from .forms import UserLoginForm
 from .forms import StudentMoneyForm
 
@@ -17,6 +20,7 @@ from documents.models import (
     TheMainActivitiesOfProforg,
     UsefulLinks,
 )
+
 from news.models import News
 from ourteam.models import Worker
 
@@ -52,6 +56,15 @@ def home(request):
         return redirect(rederict_path)
 
     context.update({'form': form})
+
+    send_mail(
+        'Test email',
+        'Hello from django.',
+        settings.EMAIL_HOST_USER,
+        ['lazarev989@gmail.com'],
+        fail_silently=False,
+    )
+
     return render(request, 'miet_union/home.html', context)
 
 
