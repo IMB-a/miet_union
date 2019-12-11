@@ -8,8 +8,11 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 
 from miet_union import settings
-from .forms import UserLoginForm
-from .forms import StudentMoneyForm
+from .forms import (
+    UserLoginForm,
+    StudentMoneyForm,
+    EmailingForm,
+)
 
 from documents.models import (
     CommissionsOfProfcom,
@@ -43,6 +46,18 @@ def home(request):
         'all_news': all_news,
     }
 
+    email_form = EmailingForm(request.POST or None)
+    if email_form.is_valid():
+        email = request.POST.get('email')
+        send_mail(
+        subject='Test email',
+        message='Hello from django.',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+    context.update({'email_form': email_form})
+
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
     if form.is_valid():
@@ -57,13 +72,7 @@ def home(request):
 
     context.update({'form': form})
 
-    send_mail(
-        'Test email',
-        'Hello from django.',
-        settings.EMAIL_HOST_USER,
-        ['lazarev989@gmail.com'],
-        fail_silently=False,
-    )
+    
 
     return render(request, 'miet_union/home.html', context)
 
