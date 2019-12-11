@@ -49,7 +49,7 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        send_email(email)
+        send_email(email, context)
     context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
