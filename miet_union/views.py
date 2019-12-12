@@ -2,13 +2,9 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
 
-from miet_union import settings
-from .emailing import send_email
 from .forms import (
     EmailingForm,
     StudentMoneyForm,
@@ -53,10 +49,7 @@ def home(request):
     if email_form.is_valid():
         email = request.POST.get('email')
         new_email = EmailSubscription.objects.create(email=email)
-        if EmailSubscription.objects.filter(email__iexact=email).exists():
-            raise ValidationError('...')
         new_email.save()
-        # send_email(email, context)
     context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
@@ -72,9 +65,6 @@ def home(request):
         return redirect(rederict_path)
 
     context.update({'form': form})
-
-    
-
     return render(request, 'miet_union/home.html', context)
 
 

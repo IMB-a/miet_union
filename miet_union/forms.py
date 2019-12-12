@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from news.models import EmailSubscription
 
+
 class UserLoginForm(forms.Form):
     username = forms.CharField(
         label='Имя пользователя',
@@ -76,13 +77,14 @@ class StudentMoneyForm(forms.Form):
 
 class EmailingForm(forms.Form):
     email = forms.EmailField(
-        label='Введите электронную почту',
+        label='',
         widget=forms.EmailInput(attrs={'class': 'form-control',
-                                      'placeholder': 'Электронная почта',}))
+                                       'placeholder': 'Электронная почта'}))
+
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
 
-        if email:
+        if email and EmailSubscription.objects.filter(email=email):
             if EmailSubscription.objects.get(email=email):
                 raise forms.ValidationError('Вы уже подписаны')
         return super(EmailingForm, self).clean(*args, **kwargs)

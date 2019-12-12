@@ -1,10 +1,12 @@
 import os
 
 from django.db import models
-from django.utils import timezone
 from django.dispatch import receiver
+from django.utils import timezone
 
 from miet_union.decorators import disable_for_loaddata
+# from miet_union.views import home
+from miet_union.emailing import send_email
 
 
 class News(models.Model):
@@ -22,6 +24,12 @@ class News(models.Model):
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
         ordering = ['-created']
+
+
+@receiver(models.signals.pre_save, sender=News)
+def send_emails(instance, *args, **kwargs):
+    all_emails = EmailSubscription.objects.all()
+    send_email(instance, all_emails)
 
 
 class EmailSubscription(models.Model):
