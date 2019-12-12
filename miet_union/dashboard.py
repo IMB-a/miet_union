@@ -15,6 +15,12 @@ class CustomIndexDashBoard(Dashboard):
         )
         self.children.append(
             modules.ModelList(
+                title=('Почта для рассылки'),
+                models=('news.models.EmailSubscription',),
+            )
+        )
+        self.children.append(
+            modules.ModelList(
                 title=('Работники Профкома'),
                 models=('ourteam.models.Worker',),
             )

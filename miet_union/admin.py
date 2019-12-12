@@ -12,7 +12,10 @@ from documents.models import (
     TheMainActivitiesOfProforg,
     UsefulLinks,
 )
-from news.models import News
+from news.models import (
+    News,
+    EmailSubscription,
+)
 from ourteam.models import Worker
 
 
@@ -22,6 +25,14 @@ class CustomDashboard(Dashboard):
 
     def __init__(self, **kwargs):
         Dashboard.__init__(**kwargs)
+
+
+class EmailSubscriptionAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Worker
+    list_display = ('email',
+                    'created'
+                    )
 
 
 class NewsAdmin(SummernoteModelAdmin):
@@ -102,12 +113,15 @@ admin.site.index_title = ('Профком')
 admin.site.site_title = ('Административная консоль')
 
 
+admin.site.register(EmailSubscription, EmailSubscriptionAdmin)
 admin.site.register(CommissionsOfProfcom, CommissionsOfProfcomAdmin)
 admin.site.register(HelpForProforg, HelpForProforgAdmin)
 admin.site.register(HelpForStudentProforg, HelpForStudentProforgAdmin)
 admin.site.register(NormativeDocuments, NormativeDocumentsAdmin)
 admin.site.register(News, NewsAdmin)
-admin.site.register(ProtectionOfPersonalInformation, ProtectionOfPersonalInformationAdmin)
-admin.site.register(TheMainActivitiesOfProforg, TheMainActivitiesOfProforgAdmin)
+admin.site.register(ProtectionOfPersonalInformation,
+                    ProtectionOfPersonalInformationAdmin)
+admin.site.register(TheMainActivitiesOfProforg,
+                    TheMainActivitiesOfProforgAdmin)
 admin.site.register(UsefulLinks, UsefulLinksAdmin)
 admin.site.register(Worker, WorkerAdmin)
