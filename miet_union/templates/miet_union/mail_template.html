@@ -3,20 +3,16 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-lg-8">
-        {% if all_news %}
-        {% for news in all_news %}
-        {% if forloop.first and not all_news.has_previous %}
+        {% if instance %}
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h1 class="p-title"><b>На портале профкома института МИЭТ вышла новость:</b></h1>
-          <h2><a href="{{ ALLOWED_HOSTS }}/{% url 'news_page' pk=news.pk %}" # TODO вставить новый урл перед номером
+          <h2><a href="{{ ALLOWED_HOSTS }}/" # TODO вставить новый урл перед номером
               новости style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
-              {{ news.title|truncatechars:100 }}</a></h2>
-          <h4><a href="{{ ALLOWED_HOSTS }}/{% url 'news_page' pk=news.pk %}" # TODO вставить новый урл перед номером
+              {{ instance.title|truncatechars:100 }}</a></h2>
+          <h4><a href="{{ ALLOWED_HOSTS }}/" # TODO вставить новый урл перед номером
               новости style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
-              {{ news.main_text|truncatechars:200|safe }}</a></h4>
+              {{ instance.main_text|truncatechars:200|safe }}</a></h4>
         </div><!-- card-view -->
-        {% endif %}
-        {% endfor %}
         {% endif %}
       </div><!-- col-sm-8 -->
     </div><!-- row -->

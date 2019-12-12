@@ -1,10 +1,12 @@
 import os
 
 from django.db import models
-from django.utils import timezone
 from django.dispatch import receiver
+from django.utils import timezone
 
 from miet_union.decorators import disable_for_loaddata
+# from miet_union.views import home
+from miet_union.emailing import send_email
 
 
 class News(models.Model):
@@ -24,11 +26,36 @@ class News(models.Model):
         ordering = ['-created']
 
 
+@receiver(models.signals.pre_save, sender=News)
+def send_emails(instance, *args, **kwargs):
+    all_emails = EmailSubscription.objects.all()
+    send_email(instance, all_emails)
+
+
+class EmailSubscription(models.Model):
+    email = models.EmailField(
+        verbose_name='Электронная почта',
+        unique=True,
+        error_messages={'unique': "This email has already been registered."}
+    )
+    created = models.DateTimeField(
+        default=timezone.now, verbose_name='Дата подписки')
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        verbose_name = 'Почтовый адрес на рассылку'
+        verbose_name_plural = 'Почтовые адреса на рассылку'
+        ordering = ['-created']
+
+
 # https://djangosnippets.org/snippets/10638/
 def _get_model_filefield_names(model):
     return list(
         f.name for f in model._meta.get_fields() if isinstance(f, models.FileField)
     )
+
 
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
