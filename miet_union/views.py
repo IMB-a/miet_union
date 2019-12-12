@@ -5,8 +5,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import UserLoginForm
-from .forms import StudentMoneyForm
+from .forms import (
+    EmailingForm,
+    StudentMoneyForm,
+    UserLoginForm,
+)
 
 from documents.models import (
     CommissionsOfProfcom,
@@ -17,7 +20,10 @@ from documents.models import (
     TheMainActivitiesOfProforg,
     UsefulLinks,
 )
-from news.models import News
+from news.models import (
+    EmailSubscription,
+    News,
+)
 from ourteam.models import Worker
 
 from pdf.pdfed import pdf_money
@@ -38,6 +44,13 @@ def home(request):
     context = {
         'all_news': all_news,
     }
+
+    email_form = EmailingForm(request.POST or None)
+    if email_form.is_valid():
+        email = request.POST.get('email')
+        new_email = EmailSubscription.objects.create(email=email)
+        new_email.save()
+    context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')

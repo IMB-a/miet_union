@@ -2,12 +2,15 @@ import datetime
 
 from django import forms
 from django.contrib.auth import authenticate
+from news.models import EmailSubscription
 
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(
+        label='Имя пользователя',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(
+        label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean(self, *args, **kwargs):
@@ -70,3 +73,18 @@ class StudentMoneyForm(forms.Form):
         initial='89950000000',
         label='Номер телефона',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+class EmailingForm(forms.Form):
+    email = forms.EmailField(
+        label='',
+        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                       'placeholder': 'Электронная почта'}))
+
+    def clean(self, *args, **kwargs):
+        email = self.cleaned_data.get('email')
+
+        if email and EmailSubscription.objects.filter(email=email):
+            if EmailSubscription.objects.get(email=email):
+                raise forms.ValidationError('Вы уже подписаны')
+        return super(EmailingForm, self).clean(*args, **kwargs)
