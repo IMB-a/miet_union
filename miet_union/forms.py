@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 from django.contrib.auth import authenticate
+from news.models import EmailSubscription
 
 
 class UserLoginForm(forms.Form):
@@ -75,7 +76,15 @@ class StudentMoneyForm(forms.Form):
 
 
 class EmailingForm(forms.Form):
-    email = forms.CharField(
-        label='Введите электронную почту',
-        widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': 'Электронная почта',}))
+    email = forms.EmailField(
+        label='',
+        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                       'placeholder': 'Электронная почта'}))
+
+    def clean(self, *args, **kwargs):
+        email = self.cleaned_data.get('email')
+
+        if email and EmailSubscription.objects.filter(email=email):
+            if EmailSubscription.objects.get(email=email):
+                raise forms.ValidationError('Вы уже подписаны')
+        return super(EmailingForm, self).clean(*args, **kwargs)
