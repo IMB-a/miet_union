@@ -4,123 +4,187 @@
 {% block title %} Домашняя страница {% endblock %}
 <!-- START OF MAIN SLIDER -->
 {% block content %}
-<section class="">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 col-lg-8">
-        {% if all_news %}
-        {% for news in all_news %}
-        {% if forloop.first and not all_news.has_previous %}
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h4 class="p-title"><b>Последняя новость</b></h4>
-          <h4><a href="{% url 'news_page' pk=news.pk %}"
-              style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
-              {{ news.title|truncatechars:100 }}</a></h4>
-          <img src="/media/{{ news.image }}" alt="">
-          <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
-            <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
-          </ul>
-        </div><!-- card-view -->
-        {% else %}
-        <div class="mb-30 sided-350x card-view" style="min-height: 200px">
-          <div class="s-left">
-            <img src="/media/{{ news.image }}" alt="">
-          </div><!-- left-area -->
-          <div class="s-right ptb-0 p-sm-20 pb-sm-0 plr-30 plr-xs-0">
-            <h4><a href="{% url 'news_page' pk=news.pk %}"
-                style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 15px; min-height: 150px">
-                {{ news.title|truncatechars:100 }}</a></h4>
-            <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
-              <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
-            </ul>
-          </div><!-- right-area -->
-        </div><!-- sided-350x -->
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% if all_news %}
-        <nav aria-label="...">
-          <ul class="pagination mb-30">
-            {% if all_news.has_previous %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.previous_page_number }}"><i class="ion-chevron-left"></i></a>
-            </li>
-            {% endif %}
-            {% for page in all_news.paginator.page_range %}
-            {% if page == all_news.number %}
-            <li class="page-item active">
-              <a class="page-link">{{ page }} <span class="sr-only">(current)</span></a>
-            </li>
-            {% else %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page }}">{{ page }} <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            {% endfor %}
-            <li class="page-item">
-              {% if all_news.has_next %}
-              <a class="page-link" href="?page={{ all_news.next_page_number }}"><i class="ion-chevron-right"></i></a>
-              {% endif %}
-            </li>
-          </ul>
-        </nav>
-        {% endif %}
-      </div><!-- col-sm-8 -->
-      <!-- START OF SIDEBAR NEWSLETTER -->
-      <div class="col-md-12 col-lg-4">
-        <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Мы вконтакте</b></h4>
-          <ul>
-            <script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
-            <!-- VK Widget -->
-            <div id="vk_groups"></div>
-            <script type="text/javascript">
-              VK.Widgets.Group("vk_groups", {
-                mode: 3,
-                width: "auto",
-                no_cover: 0,
-              }, 20030105);
-            </script>
-          </ul>
-        </div><!-- card-view -->
-        <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Поиск по новостям (Заглушка)</b></h4>
-          <p class="text-center" style="margin-bottom: 20px;">Найти новость</p>
-          <form class="form-sm max-w-400x mlr-auto">
-            <input type="email" placeholder="Введите название новости">
-            <h6><button class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block" type="submit"
-                style="font-size: 1.1em;"><b>Найти</b></button></h6>
-          </form>
-        </div><!-- card-view -->
-        <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Подпишитесь на уведомления</b></h4>
-          <form action="" method="post"> {% csrf_token %}
-            {{ email_form}}
-              <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11" style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">Подписаться</button>
-          </form>
-            
-        </div><!-- card-view -->
-        <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Наш офис</b></h4>
-          <ul class="list-contact list-li-mb-20">
-            <li><i class="ion-ios-home" style="font-size: 1.7em;"></i>124498, Россия, Москва, Зеленоград, Площадь
-              Шокина, дом 1. ауд (1206, 1206а)
-            </li>
-            <li><a href="#"><i class="ion-ios-telephone" style="font-size: 1.7em;"></i>8 (499) 710-14-47</a></li>
-            <li>
-              <ul>
-                <li><a href="#"><i class="ion-email" style="font-size: 1.7em;"></i>profcom@miee.ru</a></li>
-                <li><a href="#"><i class="ion-email" style="font-size: 1.7em;"></i>profcom-miet@mail.ru</a></li>
-              </ul>
-            </li>
-            <li class="mb-0"><a href="https://miet.ru/structure/s/1905/e/50497/355"><i class="ion-ios-world"
-                  style="font-size: 1.7em;"></i>https://miet.ru/profcom</a></li>
-            </li>
-          </ul>
-        </div><!-- card-view -->
-        <!-- END OF SIDEBAR NEWSLETTER -->
-      </div><!-- col-sm-4 -->
-    </div><!-- row -->
-  </div><!-- container -->
-</section>
+
+    <section class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    {% if all_news %}
+                        {% for news in all_news %}
+                            {% if forloop.first and not all_news.has_previous %}
+                                <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+                                    <h4 class="p-title"><b>Последняя новость</b></h4>
+                                    <h4><a href="{% url 'news_page' pk=news.pk %}"
+                                           style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
+                                        {{ news.title|truncatechars:100 }}</a></h4>
+                                    <img src="/media/{{ news.image }}" alt="">
+                                    <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
+                                        <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                                    </ul>
+                                </div><!-- card-view -->
+                            {% else %}
+                                <div class="mb-30 sided-350x card-view" style="min-height: 200px">
+                                    <div class="s-left">
+                                        <img src="/media/{{ news.image }}" alt="">
+                                    </div><!-- left-area -->
+                                    <div class="s-right ptb-0 p-sm-20 pb-sm-0 plr-30 plr-xs-0">
+                                        <h4><a href="{% url 'news_page' pk=news.pk %}"
+                                               style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 15px; min-height: 150px">
+                                            {{ news.title|truncatechars:100 }}</a></h4>
+                                        <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
+                                            <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                                        </ul>
+                                    </div><!-- right-area -->
+                                </div><!-- sided-350x -->
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if all_news %}
+                        <nav aria-label="...">
+                            <ul class="pagination mb-30"><!--Pagination-->
+                                {% if all_news.has_previous %}
+                                    <li class="page-item ">
+                                        <a class="page-link" href="?page={{ all_news.previous_page_number }}"><i
+                                                class="ion-chevron-left"></i></a>
+                                    </li>
+                                {% endif %}
+                                <!--Кнопка на первую страницу-->
+                                {% if all_news.number > 3 %}
+                                    <li class="page-item ">
+                                        <a class="page-link" href="?page=1"> 1 <span
+                                                class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                <!--Если до текущей страницы больше 3 страниц-->
+                                {% if all_news.number|add:'-4' > 0 %}
+                                    <li class="page-item ">
+                                        <a class="page-link">... <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                {% if all_news.number|add:'-2' > 0 %}
+                                    <li class="page-item ">
+                                        <a class="page-link"
+                                           href="?page={{ all_news.number|add:'-2' }}">{{ all_news.number|add:'-2' }}
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                {% if all_news.number|add:'-1' > 0 %}
+                                    <li class="page-item ">
+                                        <a class="page-link"
+                                           href="?page={{ all_news.number|add:'-1' }}">{{ all_news.number|add:'-1' }}
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                <!--Текущая страница-->
+                                {% if all_news.number %}
+                                    <li class="page-item active">
+                                        <a class="page-link">{{ all_news.number }} <span
+                                                class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                {% if all_news.number|add:'1' <= all_news.paginator.num_pages %}
+                                    <li class="page-item ">
+                                        <a class="page-link"
+                                           href="?page={{ all_news.number|add:'1' }}">{{ all_news.number|add:'1' }}
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                {% if all_news.number|add:'2' <= all_news.paginator.num_pages %}
+                                    <li class="page-item ">
+                                        <a class="page-link"
+                                           href="?page={{ all_news.number|add:'2' }}">{{ all_news.number|add:'2' }}
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                <!--Если после текущей страницы больше 3 страниц-->
+                                {% if all_news.number|add:'4' <= all_news.paginator.num_pages %}
+                                    <li class="page-item ">
+                                        <a class="page-link">... <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                <!--Кнопка на последнюю страницу-->
+                                {% if all_news.number|add:'3' <= all_news.paginator.num_pages %}
+                                    <li class="page-item ">
+                                        <a class="page-link"
+                                           href="?page={{ all_news.paginator.num_pages }}"> {{ all_news.paginator.num_pages }}
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                {% endif %}
+                                <li class="page-item">
+                                    {% if all_news.has_next %}
+                                        <a class="page-link" href="?page={{ all_news.next_page_number }}"><i
+                                                class="ion-chevron-right"></i></a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    {% endif %}
+                </div><!-- col-sm-8 -->
+                <!-- START OF SIDEBAR NEWSLETTER -->
+                <div class="col-md-12 col-lg-4">
+                    <div class="mb-30 mt-md-30 p-30 card-view">
+                        <h4 class="p-title"><b>Мы вконтакте</b></h4>
+                        <ul>
+                            <script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
+                            <!-- VK Widget -->
+                            <div id="vk_groups"></div>
+                            <script type="text/javascript">
+                                VK.Widgets.Group("vk_groups", {
+                                    mode: 3,
+                                    width: "auto",
+                                    no_cover: 0,
+                                }, 20030105);
+                            </script>
+                        </ul>
+                    </div><!-- card-view -->
+                    <div class="mb-30 mt-md-30 p-30 card-view">
+                        <h4 class="p-title"><b>Поиск по новостям (Заглушка)</b></h4>
+                        <p class="text-center" style="margin-bottom: 20px;">Найти новость</p>
+                        <form class="form-sm max-w-400x mlr-auto">
+                            <input type="email" placeholder="Введите название новости">
+                            <h6>
+                                <button class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block" type="submit"
+                                        style="font-size: 1.1em;"><b>Найти</b></button>
+                            </h6>
+                        </form>
+                    </div><!-- card-view -->
+                    <div class="mb-30 mt-md-30 p-30 card-view">
+                        <h4 class="p-title"><b>Уведомления</b></h4>
+                        <form action="" method="post"> {% csrf_token %}
+                            {{ email_form }}
+                            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+                                    style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+                                Подписаться
+                            </button>
+                        </form>
+
+                    </div><!-- card-view -->
+                    <div class="mb-30 mt-md-30 p-30 card-view">
+                        <h4 class="p-title"><b>Наш офис</b></h4>
+                        <ul class="list-contact list-li-mb-20">
+                            <li><i class="ion-ios-home" style="font-size: 1.7em;"></i>124498, Россия, Москва,
+                                Зеленоград, Площадь
+                                Шокина, дом 1. ауд (1206, 1206а)
+                            </li>
+                            <li><a href="#"><i class="ion-ios-telephone" style="font-size: 1.7em;"></i>8 (499) 710-14-47</a>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li><a href="#"><i class="ion-email"
+                                                       style="font-size: 1.7em;"></i>profcom@miee.ru</a></li>
+                                    <li><a href="#"><i class="ion-email" style="font-size: 1.7em;"></i>profcom-miet@mail.ru</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="mb-0"><a href="https://miet.ru/structure/s/1905/e/50497/355"><i
+                                    class="ion-ios-world"
+                                    style="font-size: 1.7em;"></i>https://miet.ru/profcom</a></li>
+                            </li>
+                        </ul>
+                    </div><!-- card-view -->
+                    <!-- END OF SIDEBAR NEWSLETTER -->
+                </div><!-- col-sm-4 -->
+            </div><!-- row -->
+        </div><!-- container -->
+    </section>
 {% endblock %}
