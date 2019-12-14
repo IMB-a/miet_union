@@ -1,8 +1,9 @@
 from django.conf.urls import handler400, handler403, handler404, handler500  # noqa
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -110,10 +111,17 @@ def login_view(request):
 def my_account(request):
     change_password_form = ChangePasswordForm(request.POST or None)
     user = User.objects.get(username=request.user)
+    current_password_from_requst = request.user.password
     if change_password_form.is_valid():
+        current_password_from_form = request.POST.get(
+            "current_password")
         new_password = request.POST.get("new_password")
-        user.set_password(new_password)
-        user.save()
+        matchcheck = check_password(current_password_from_requst,
+                                    current_password_from_form
+                                    )
+        if matchcheck:
+            user.set_password(new_password)
+            user.save()
     return render(request, 'miet_union/my_account.html',
                   {'change_password_form': change_password_form})
 

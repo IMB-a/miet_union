@@ -112,9 +112,7 @@ class ChangePasswordForm(forms.Form):
             username = authenticate(username=username,
                                     password=current_password
                                     )
-            # print(username)
-            # if not username.check_password(current_password):
-            #     raise forms.ValidationError('Неверный пароль')
+        # TODO ValidationError for current_password
         if new_password != confirmed_new_password:
             raise forms.ValidationError('Пароли не совпадают')
         return super(ChangePasswordForm, self).clean(*args, **kwargs)
