@@ -88,3 +88,15 @@ class EmailingForm(forms.Form):
             if EmailSubscription.objects.get(email=email):
                 raise forms.ValidationError('Вы уже подписаны')
         return super(EmailingForm, self).clean(*args, **kwargs)
+
+
+class ChangePasswordForm(forms.Form):
+    current_password = forms.CharField(
+        label='Текущий пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password = forms.CharField(
+        label='Новый пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirm_new_password = forms.CharField(
+        label='Подтверждение нового пароля',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
