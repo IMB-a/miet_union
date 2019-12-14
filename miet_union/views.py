@@ -1,14 +1,17 @@
 from django.conf.urls import handler400, handler403, handler404, handler500  # noqa
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
+
 
 from .forms import (
     EmailingForm,
     StudentMoneyForm,
     UserLoginForm,
+    ChangePasswordForm,
 )
 
 from documents.models import (
@@ -105,7 +108,14 @@ def login_view(request):
 
 @login_required
 def my_account(request):
-    return render(request, 'miet_union/my_account.html')
+    change_password_form = ChangePasswordForm(request.POST or None)
+    user = User.objects.get(username=request.user)
+    if change_password_form.is_valid():
+        new_password = request.POST.get("new_password")
+        user.set_password(new_password)
+        user.save()
+    return render(request, 'miet_union/my_account.html',
+                  {'change_password_form': change_password_form})
 
 
 def logout_view(request):
@@ -141,7 +151,8 @@ def money_help_for_students(request):
         group = request.POST.get('group')
         address = request.POST.get('address')
         reason = request.POST.get('reason')
-        date_and_month_of_last_request = request.POST.get('date_and_month_of_last_request')
+        date_and_month_of_last_request = request.POST.get(
+            'date_and_month_of_last_request')
         year_of_last_request = request.POST.get('year_of_last_request')
         passport_number_part_one = request.POST.get('passport_number_part_one')
         passport_number_part_two = request.POST.get('passport_number_part_two')
