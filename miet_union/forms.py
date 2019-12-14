@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from news.models import EmailSubscription
 
 
@@ -88,3 +89,30 @@ class EmailingForm(forms.Form):
             if EmailSubscription.objects.get(email=email):
                 raise forms.ValidationError('Вы уже подписаны')
         return super(EmailingForm, self).clean(*args, **kwargs)
+
+
+class ChangePasswordForm(forms.Form):
+    current_password = forms.CharField(
+        label='Текущий пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password = forms.CharField(
+        label='Новый пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirmed_new_password = forms.CharField(
+        label='Подтверждение нового пароля',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean(self, *args, **kwargs):
+        username = User.username
+        current_password = self.cleaned_data.get('current_password')
+        new_password = self.cleaned_data.get('new_password')
+        confirmed_new_password = self.cleaned_data.get(
+            'confirmed_new_password')
+        if username and current_password:
+            username = authenticate(username=username,
+                                    password=current_password
+                                    )
+        # TODO ValidationError for current_password
+        if new_password != confirmed_new_password:
+            raise forms.ValidationError('Пароли не совпадают')
+        return super(ChangePasswordForm, self).clean(*args, **kwargs)
