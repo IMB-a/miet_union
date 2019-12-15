@@ -4,22 +4,46 @@
 {% block title %} Тестовая страница {% endblock %}
 {% block content %}
 <section class="">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 col-lg-4">
-          <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-            <h4 class="p-title"><b>Мой аккаунт</b></h4>
-            <h4 style="text-align: center">Смена пароля</h4>
-            <form action="" method="post"> {% csrf_token %}
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-8 col-lg-4">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h4 class="p-title"><b>Мой аккаунт</b></h4>
+          <h4 style="text-align: center">Смена пароля</h4>
+          <div class="container my-2" style="padding: 0px">
+            <div class="row">
+              <div class="col-md-12 mx-auto">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    Внимание! {{ message }}<br />
+                    </span>
+                </div>
+                {%else %}
+                <div class="alert alert-success messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}<br />
+                    </span>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <form action="" method="post"> {% csrf_token %}
             {{change_password_form.as_p}}
-              <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Подписаться
             </button>
-            </form>
-          </div><!-- bg-white -->
-        </div><!-- col-sm-8 -->
-      </div><!-- row -->
-    </div><!-- container -->
-  </section>
+          </form>
+        </div><!-- bg-white -->
+      </div><!-- col-sm-8 -->
+    </div><!-- row -->
+  </div><!-- container -->
+</section>
 {% endblock %}

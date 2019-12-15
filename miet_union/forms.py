@@ -84,10 +84,6 @@ class EmailingForm(forms.Form):
 
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
-
-        if email and EmailSubscription.objects.filter(email=email):
-            if EmailSubscription.objects.get(email=email):
-                raise forms.ValidationError('Вы уже подписаны')
         return super(EmailingForm, self).clean(*args, **kwargs)
 
 
@@ -108,11 +104,4 @@ class ChangePasswordForm(forms.Form):
         new_password = self.cleaned_data.get('new_password')
         confirmed_new_password = self.cleaned_data.get(
             'confirmed_new_password')
-        if username and current_password:
-            username = authenticate(username=username,
-                                    password=current_password
-                                    )
-        # TODO ValidationError for current_password
-        if new_password != confirmed_new_password:
-            raise forms.ValidationError('Пароли не совпадают')
         return super(ChangePasswordForm, self).clean(*args, **kwargs)

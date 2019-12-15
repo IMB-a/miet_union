@@ -1,4 +1,5 @@
 from django.conf.urls import handler400, handler403, handler404, handler500  # noqa
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -52,8 +53,13 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        new_email = EmailSubscription.objects.create(email=email)
-        new_email.save()
+        if email and EmailSubscription.objects.filter(email=email):
+            if EmailSubscription.objects.get(email=email):
+                messages.error(request, 'Вы уже подписаны')
+        else:
+            new_email = EmailSubscription.objects.create(email=email)
+            new_email.save()
+            messages.success(request, 'Вы успешно подписались')
     context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
@@ -116,12 +122,19 @@ def my_account(request):
         current_password_from_form = request.POST.get(
             "current_password")
         new_password = request.POST.get("new_password")
+        confirmed_new_password = request.POST.get("confirmed_new_password")
         matchcheck = check_password(current_password_from_requst,
-                                    current_password_from_form
-                                    )
+                                    current_password_from_form)
+        print(matchcheck)
         if matchcheck:
-            user.set_password(new_password)
-            user.save()
+            if new_password == confirmed_new_password:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Пароль изменен')
+            else:
+                messages.error(request, 'Пароли не совпадают')
+        else:
+            messages.error(request, 'Неправельный пароль')
     return render(request, 'miet_union/my_account.html',
                   {'change_password_form': change_password_form})
 
