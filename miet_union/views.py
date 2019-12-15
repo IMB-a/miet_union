@@ -91,7 +91,7 @@ def registration(request):
     next_ = request.GET.get('next')
     if request.method == 'POST' and form.is_valid():
         next_post = request.POST.get('next')
-        redirect_path = next_ or next_post or '/'
+        redirect_path = next_ or next_post or '/'   # noqa
         form.save()
         return redirect('/login')
 

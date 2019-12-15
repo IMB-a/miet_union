@@ -2,8 +2,6 @@ import datetime
 
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from news.models import EmailSubscription
 
 
 class UserLoginForm(forms.Form):
@@ -82,10 +80,6 @@ class EmailingForm(forms.Form):
         widget=forms.EmailInput(attrs={'class': 'form-control',
                                        'placeholder': 'Электронная почта'}))
 
-    def clean(self, *args, **kwargs):
-        email = self.cleaned_data.get('email')
-        return super(EmailingForm, self).clean(*args, **kwargs)
-
 
 class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
@@ -97,11 +91,3 @@ class ChangePasswordForm(forms.Form):
     confirmed_new_password = forms.CharField(
         label='Подтверждение нового пароля',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-    def clean(self, *args, **kwargs):
-        username = User.username
-        current_password = self.cleaned_data.get('current_password')
-        new_password = self.cleaned_data.get('new_password')
-        confirmed_new_password = self.cleaned_data.get(
-            'confirmed_new_password')
-        return super(ChangePasswordForm, self).clean(*args, **kwargs)
