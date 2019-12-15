@@ -142,6 +142,29 @@
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
           <h4 class="p-title"><b>Уведомления</b></h4>
+          {% if messages %}
+          <div class="container my-2" style="padding: 0px">
+            <div class="row">
+              <div class="col-md-12 mx-auto">
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    Внимание! {{ message }}<br />
+                    </span>
+                </div>
+                {% else %}
+                <div class="alert alert-success messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}<br />
+                    </span>
+                </div>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
           <form action="" method="post"> {% csrf_token %}
             {{ email_form }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
