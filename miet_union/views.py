@@ -121,10 +121,11 @@ def my_account(request):
     if change_password_form.is_valid():
         current_password_from_form = request.POST.get(
             "current_password")
+        print(current_password_from_form)
         new_password = request.POST.get("new_password")
         confirmed_new_password = request.POST.get("confirmed_new_password")
-        matchcheck = check_password(current_password_from_requst,
-                                    current_password_from_form)
+        matchcheck = check_password(current_password_from_form,
+                                    current_password_from_requst)
         print(matchcheck)
         if matchcheck:
             if new_password == confirmed_new_password:
