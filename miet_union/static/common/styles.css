@@ -770,7 +770,7 @@ form textarea{ min-height: 120px; max-height: 120px; padding: 10px 15px; }
 	border: 1px solid #E1E1E1; margin-right: 10px; border-radius: 3px; font-size: 1.2em; }
 
 .pagination > li.active > a,
-.pagination > li.active > a:hover{ background: #0f45c7; color: #fff; border-color: transparent; }
+.pagination > li.active > a:hover{ background: #fff; color: #0f45c7; border-color: #0f45c7; }
 .pagination > li > a:hover{ background: none; border-color: #0f45c7; }
 
 
