@@ -7,10 +7,17 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-md-8 col-lg-4">
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+      <div class="col-md-8 col-lg-8">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view" style="min-height: 401px">
           <h4 class="p-title"><b>Мой аккаунт</b></h4>
-          <h4 style="text-align: center">Смена пароля</h4>
+          <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+          <ul class="list-contact list-li-mb-20" style="margin-top: 5px">
+            <li><i class="ion-email" style="font-size: 1.7em;"></i>{{ user.email }}</a></li>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h4 class="p-title"><b>Смена пароля</b></h4>
           <div class="container my-2" style="padding: 0px">
             <div class="row">
               <div class="col-md-12 mx-auto">
@@ -38,11 +45,26 @@
             {{change_password_form.as_p}}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
-              Подписаться
+              Изменить
             </button>
           </form>
         </div><!-- bg-white -->
       </div><!-- col-sm-8 -->
+      <div class="col-md-8 col-lg-8">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
+          <h5>Нет информации (заглушка)</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h4 class="p-title"><b>Отписаться от рассылки</b></h4>
+          <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Отписаться(заглушка)
+            </button>
+        </div>
+      </div
     </div><!-- row -->
   </div><!-- container -->
 </section>
