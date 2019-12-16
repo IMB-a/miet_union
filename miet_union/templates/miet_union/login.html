@@ -5,16 +5,41 @@
 <section class="">
   <div class="container">
     <div class="row mx-auto">
-      <div class='col-md-6 offset-md-3 '>
+      <div class='col-md-6 offset-md-3'>
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h1 class="" style="text-align: center;">Войти в систему</h1>
           <form action="" method="post"> {% csrf_token %}
-            {{form.as_p}}
-              <div class=' btn-block '>
-                <br><input type="submit" value="Войти" class="btn-fill-primary active font-11">
-              </div>
+
+            <div class="fieldWrapper" style="margin-top: 7px">
+              {{ form.username.errors }}
+              <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
+              {{ form.username }}
+            </div>
+            <div class="fieldWrapper" style="margin-top: 7px">
+              {{ form.password.errors }}
+              <label for="{{ form.password.id_for_label }}">Пароль:</label>
+              {{ form.password }}
+            </div>
+            <div class="container" style="padding: 0px">
+              <div class="row">
+                <div class='col-md-5'>
+                  <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+                    style="margin-top: 7px; font-size: 1.1em; height: 45px; line-height: 45px; width: 100%">
+                    Войти
+                  </button>
+                </div>
           </form>
-          <button onclick="location.href = '/registration';" class="btn-fill-primary btn-block active font-11" style="margin-top: 7px">Зарегистрироваться</button>
+          {% comment %} <div class='col-md-2'>
+            <label class="mt-15"
+              style="font-size: 1.1em; height: 45px; line-height: 45px; width: 100%; text-align: center">
+              Или
+            </label>
+          </div> {% endcomment %}
+          <div class='col-md-7'>
+            <button onclick="location.href = '/registration';"
+              class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 45px; line-height: 45px; width: 100%">Зарегистрироваться</button>
+          </div>
         </div>
       </div>
     </div>
