@@ -26,10 +26,10 @@
       <div class="container">
         <a class="menu-nav-icon" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
         <ul class="main-menu" id="main-menu">
-          <li class="drop-down"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white.png'%}"
-                style="width: 60px"></a>
+          <li style="margin-right: 30px"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white.png'%}"
+                style="width: 60px;"></a>
           </li>
-          <li class="drop-down" style="margin-left: 30px"><a href="{% url 'home' %}">Главная<i class=""></i></a>
+          <li ><a href="{% url 'home' %}">Главная<i class=""></i></a>
           </li>
           <li class="drop-down"><a>Студенту<i class="ion-chevron-down"></i></a>
             <ul class="drop-down-menu drop-down-inner">
@@ -108,7 +108,7 @@
             <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-8 col-sm-8">
+        <div class="col-lg-2 col-md-8 col-sm-6">
           <h5 class="f-title"><b>Мат. Помощь</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'money_help_for_students' %}">Студенту</a></li>
@@ -116,7 +116,7 @@
             <li><a href="{% url 'money_help_for_workers' %}">Сотруднику</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-3 col-md-8 col-sm-8">
+        <div class="col-lg-3 col-md-8 col-sm-6">
           <h5 class="f-title"><b>Документы</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
@@ -125,7 +125,7 @@
             <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-8 col-sm-8">
+        <div class="col-lg-2 col-md-8 col-sm-6">
           <h5 class="f-title"><b>О нас</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
@@ -133,7 +133,7 @@
             <li><a href="{% url 'our_team' %}">Сотрудники</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-3 col-md-8 col-sm-8">
+        <div class="col-lg-3 col-md-8 col-sm-12 d-none d-sm-block">
           <a href="{% url 'home' %}" title="Домашнаяя страница"><img src="{% static 'images/emblema_white.png'%}"
               style="width: 70%"></a>
         </div><!-- col-sm-4 -->
