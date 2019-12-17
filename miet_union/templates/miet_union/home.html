@@ -23,19 +23,37 @@
           </ul>
         </div><!-- card-view -->
         {% else %}
-        <div class="mb-30 sided-350x card-view" style="min-height: 200px">
-          <div class="s-left">
-            <img src="/media/{{ news.image }}" alt="">
-          </div><!-- left-area -->
-          <div class="s-right ptb-0 p-sm-20 pb-sm-0 plr-30 plr-xs-0">
-            <h4><a href="{% url 'news_page' pk=news.pk %}"
-                style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 15px; min-height: 150px">
-                {{ news.title|truncatechars:100 }}</a></h4>
-            <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
-              <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
-            </ul>
-          </div><!-- right-area -->
-        </div><!-- sided-350x -->
+        <div class="mb-30 card-view" style="min-height: 200px">
+          <div class="container">
+            <div class="row">
+              <!-- for non mobile -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+              </div><!-- left-area -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+                <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /for non mobile -->
+
+              <!-- only for mobile -->
+              <div class="col-sm-6 d-block d-sm-none">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+              </div><!-- right-area -->
+              <div class="col-sm-6 d-block d-sm-none" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+                <ul class="mtb-10 list-li-mr-20 color-lite-black " style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /only for mobile -->
+            </div>
+          </div>
+        </div>
         {% endif %}
         {% endfor %}
         {% endif %}
