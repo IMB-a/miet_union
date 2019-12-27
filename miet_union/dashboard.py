@@ -10,25 +10,31 @@ class CustomIndexDashBoard(Dashboard):
         self.children.append(
             modules.ModelList(
                 title=('Новости портала'),
-                models=('news.models.News',),
+                models=('miet_union.models.News',),
             )
         )
         self.children.append(
             modules.ModelList(
                 title=('Почта для рассылки'),
-                models=('news.models.EmailSubscription',),
+                models=('miet_union.models.EmailSubscription',),
             )
         )
         self.children.append(
             modules.ModelList(
                 title=('Работники Профкома'),
-                models=('ourteam.models.Worker',),
+                models=('miet_union.models.Worker',),
             )
         )
         self.children.append(
             modules.ModelList(
                 title=('Работники Профкома'),
                 models=('miet_union.models.HelpForProforg',),
+            )
+        )
+        self.children.append(
+            modules.ModelList(
+                title=('Работники Профкома'),
+                models=('miet_union.models.MoneyHelp',),
             )
         )
         self.children.append(
@@ -43,16 +49,16 @@ class CustomIndexDashBoard(Dashboard):
             children=[
                 modules.ModelList(
                     title=('Студенту'),
-                    models=('documents.models.HelpForProforg',
-                            'documents.models.HelpForStudentProforg',
-                            'documents.models.TheMainActivitiesOfProforg',),
+                    models=('miet_union.models.HelpForProforg',
+                            'miet_union.models.HelpForStudentProforg',
+                            'miet_union.models.TheMainActivitiesOfProforg',),
                 ),
                 modules.ModelList(
                     title=('Документы'),
-                    models=('documents.models.ProtectionOfPersonalInformation',
-                            'documents.models.NormativeDocuments',
-                            'documents.models.CommissionsOfProfcom',
-                            'documents.models.UsefulLinks',),
+                    models=('miet_union.models.ProtectionOfPersonalInformation',
+                            'miet_union.models.NormativeDocuments',
+                            'miet_union.models.CommissionsOfProfcom',
+                            'miet_union.models.UsefulLinks',),
                 ),
 
             ]

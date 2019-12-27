@@ -16,20 +16,19 @@ from .forms import (
     ChangePasswordForm,
 )
 
-from documents.models import (
+from .models import (
     CommissionsOfProfcom,
+    EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
+    MoneyHelp,
+    News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
+    Worker,
 )
-from news.models import (
-    EmailSubscription,
-    News,
-)
-from ourteam.models import Worker
 
 from pdf.pdfed import pdf_money
 
@@ -115,6 +114,13 @@ def login_view(request):
 
 @login_required
 def my_account(request):
+    context = {}
+    if MoneyHelp.objects.filter(first_name=request.user.first_name,
+                                last_name=request.user.last_name):
+        money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
+                                           last_name=request.user.last_name)
+        context.update({'money_help': money_help})
+    print(context)
     change_password_form = ChangePasswordForm(request.POST or None)
     user = User.objects.get(username=request.user)
     current_password_from_requst = request.user.password
@@ -136,7 +142,7 @@ def my_account(request):
                 messages.error(request, 'Пароли не совпадают')
         else:
             messages.error(request, 'Неправельный пароль')
-    return render(request, 'miet_union/my_account.html',
+    return render(request, 'miet_union/my_account.html', context,
                   {'change_password_form': change_password_form})
 
 
