@@ -120,7 +120,6 @@ def my_account(request):
         money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
                                            last_name=request.user.last_name)
         context.update({'money_help': money_help})
-    print(context)
     change_password_form = ChangePasswordForm(request.POST or None)
     user = User.objects.get(username=request.user)
     current_password_from_requst = request.user.password

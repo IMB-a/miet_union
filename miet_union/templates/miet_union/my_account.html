@@ -55,13 +55,13 @@
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
           {% if money_help.status == 'no_info' %}
-          <h5>{{ money_help.status }}?????</h5>
+          <h5>Нет инфомации</h5>
           {% elif money_help.status == 'in_progress' %}
-          <h5>{{ money_help.status }},,,,,</h5>
+          <h5>В процессе</h5>
           {% elif money_help.status == 'approved' %}
-          <h5>{{ money_help.status }}!!!!!</h5>
+          <h5>Одобрена</h5>
           {% elif money_help.status == 'rejected' %}
-          <h5>{{ money_help.status }}xxxxx</h5>
+          <h5>Отклонена</h5>
           {% endif %}
         </div>
       </div>
