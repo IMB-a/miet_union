@@ -9,10 +9,11 @@
     <div class="row">
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view" style="min-height: 401px">
-          <h4 class="p-title"><b>Мой аккаунт</b></h4>
-          <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+          <h4 class="p-title"><b>Личная информация</b></h4>
+          <h4><b>{{ user.first_name }} {{ user.last_name }}</b></h4>
           <ul class="list-contact list-li-mb-20" style="margin-top: 5px">
             <li><i class="ion-email" style="font-size: 1.7em;"></i>{{ user.email }}</a></li>
+          </ul>
         </div>
       </div>
       <div class="col-md-4 col-lg-4">
@@ -29,7 +30,7 @@
                     Внимание! {{ message }}<br />
                     </span>
                 </div>
-                {%else %}
+                {% else %}
                 <div class="alert alert-success messages">
                   <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
                     {{ message }}<br />
@@ -53,18 +54,26 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
-          <h5>Нет информации (заглушка)</h5>
+          {% if money_help.status == 'no_info' %}
+          <h5>Нет инфомации</h5>
+          {% elif money_help.status == 'in_progress' %}
+          <h5>В процессе</h5>
+          {% elif money_help.status == 'approved' %}
+          <h5>Одобрена</h5>
+          {% elif money_help.status == 'rejected' %}
+          <h5>Отклонена</h5>
+          {% endif %}
         </div>
       </div>
       <div class="col-md-4 col-lg-4">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Отписаться от рассылки</b></h4>
           <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
-              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
-              Отписаться(заглушка)
-            </button>
+            style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+            Отписаться (в разработке)
+          </button>
         </div>
-      </div
+      </div>
     </div><!-- row -->
   </div><!-- container -->
 </section>

@@ -18,7 +18,7 @@ class TestModels:
         assert news.__str__()
 
     def test_worket_have_first_name(self):
-        worker = mixer.blend('ourteam.Worker',
+        worker = mixer.blend('miet_union.Worker',
                              first_name='test_title',
                              )
         assert worker
