@@ -113,6 +113,7 @@ def login_view(request):
 
 
 @login_required
+@login_required
 def my_account(request):
     context = {}
     if MoneyHelp.objects.filter(first_name=request.user.first_name,
@@ -121,6 +122,7 @@ def my_account(request):
                                            last_name=request.user.last_name)
         context.update({'money_help': money_help})
     change_password_form = ChangePasswordForm(request.POST or None)
+    context.update({'change_password_form': change_password_form})
     user = User.objects.get(username=request.user)
     current_password_from_requst = request.user.password
     if change_password_form.is_valid():
@@ -141,8 +143,7 @@ def my_account(request):
                 messages.error(request, 'Пароли не совпадают')
         else:
             messages.error(request, 'Неправельный пароль')
-    return render(request, 'miet_union/my_account.html', context,
-                  {'change_password_form': change_password_form})
+    return render(request, 'miet_union/my_account.html', context)
 
 
 def logout_view(request):
