@@ -30,7 +30,7 @@
                     Внимание! {{ message }}<br />
                     </span>
                 </div>
-                {%else %}
+                {% else %}
                 <div class="alert alert-success messages">
                   <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
                     {{ message }}<br />
@@ -54,7 +54,15 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
-          <h5>Нет информации (заглушка)</h5>
+          {% if money_help.status == 'no_info' %}
+          <h5>Нет инфомации</h5>
+          {% elif money_help.status == 'in_progress' %}
+          <h5>В процессе</h5>
+          {% elif money_help.status == 'approved' %}
+          <h5>Одобрена</h5>
+          {% elif money_help.status == 'rejected' %}
+          <h5>Отклонена</h5>
+          {% endif %}
         </div>
       </div>
       <div class="col-md-4 col-lg-4">
