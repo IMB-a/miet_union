@@ -92,7 +92,14 @@ def registration(request):
         next_post = request.POST.get('next')
         redirect_path = next_ or next_post or '/'   # noqa
         form.save()
-        return redirect('/login')
+        # login after registration
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        user = authenticate(username=username.strip(),
+                            password=password1.strip())
+        login(request, user)
+
+        return redirect('/my_account')
 
     return render(request, "miet_union/registration.html", {'form': form})
 
@@ -113,7 +120,6 @@ def login_view(request):
 
 
 @login_required
-@login_required
 def my_account(request):
     context = {}
     if MoneyHelp.objects.filter(first_name=request.user.first_name,
@@ -128,12 +134,10 @@ def my_account(request):
     if change_password_form.is_valid():
         current_password_from_form = request.POST.get(
             "current_password")
-        print(current_password_from_form)
         new_password = request.POST.get("new_password")
         confirmed_new_password = request.POST.get("confirmed_new_password")
         matchcheck = check_password(current_password_from_form,
                                     current_password_from_requst)
-        print(matchcheck)
         if matchcheck:
             if new_password == confirmed_new_password:
                 user.set_password(new_password)
