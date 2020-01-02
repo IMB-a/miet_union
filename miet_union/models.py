@@ -123,7 +123,8 @@ class NormativeDocuments(models.Model):
 
     class Meta:
         verbose_name = 'Законодательные, нормативные и уставные документы'
-        verbose_name_plural = 'Законодательные, нормативные и уставные документы'
+        verbose_name_plural = '''Законодательные,
+                                 нормативные и уставные документы'''
         ordering = ['title']
 
 
@@ -200,7 +201,10 @@ class MoneyHelp(models.Model):
 # https://djangosnippets.org/snippets/10638/
 def _get_model_filefield_names(model):
     return list(
-        f.name for f in model._meta.get_fields() if isinstance(f, models.FileField)
+        f.name for f in model._meta.get_fields() if isinstance(
+            f,
+            models.FileField
+        )
     )
 
 
