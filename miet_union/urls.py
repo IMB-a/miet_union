@@ -63,7 +63,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
 
-handler400 = 'miet_union.views.error_400'
-handler403 = 'miet_union.views.error_403'
-handler404 = 'miet_union.views.error_404'
-handler500 = 'miet_union.views.error_500'
+handler400 = 'miet_union.views.error_400'    # noqa
+handler403 = 'miet_union.views.error_403'    # noqa
+handler404 = 'miet_union.views.error_404'    # noqa
+handler500 = 'miet_union.views.error_500'    # noqa

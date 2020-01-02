@@ -55,7 +55,7 @@ class CustomIndexDashBoard(Dashboard):
                 ),
                 modules.ModelList(
                     title=('Документы'),
-                    models=('miet_union.models.ProtectionOfPersonalInformation',
+                    models=('miet_union.models.ProtectionOfPersonalInformation',    # noqa
                             'miet_union.models.NormativeDocuments',
                             'miet_union.models.CommissionsOfProfcom',
                             'miet_union.models.UsefulLinks',),
