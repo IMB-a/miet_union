@@ -34,9 +34,13 @@ from pdf.pdfed import pdf_money
 
 
 def home(request):
+    context = {}
     all_news = News.objects.all()
     paginator = Paginator(all_news, 5)
-
+    news_count = 0
+    for news in all_news:
+        news_count += 1
+    context.update({'news_count': news_count})
     page = request.GET.get('page')
     try:
         all_news = paginator.page(page)
@@ -44,10 +48,7 @@ def home(request):
         all_news = paginator.page(1)
     except EmptyPage:
         all_news = paginator.page(paginator.num_pages)
-
-    context = {
-        'all_news': all_news,
-    }
+    context.update({'all_news': all_news})
 
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
