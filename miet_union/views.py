@@ -113,10 +113,13 @@ def login_view(request):
         password = request.POST.get('password')
         user = authenticate(username=username.strip(),
                             password=password.strip())
-        login(request, user)
-        next_post = request.POST.get('next')
-        rederict_path = next_ or next_post or '/'
-        return redirect(rederict_path)
+        if user:
+            login(request, user)
+            next_post = request.POST.get('next')
+            rederict_path = next_ or next_post or '/'
+            return redirect(rederict_path)
+        else:
+            messages.error(request, 'Неправельный логин или пароль')
     return render(request, 'miet_union/login.html', {'form': form})
 
 

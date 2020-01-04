@@ -10,18 +10,6 @@ class UserLoginForm(forms.Form):
         label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
-    def clean(self, *args, **kwargs):
-        username = self.cleaned_data.get('username')
-        password = self.cleaned_data.get('password')
-
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if not user:
-                raise forms.ValidationError('Такого пользователя нет')
-            if not user.check_password(password):
-                raise forms.ValidationError('Неверный пароль')
-        return super(UserLoginForm, self).clean(*args, **kwargs)
-
 
 class StudentMoneyForm(forms.Form):
     full_name = forms.CharField(
