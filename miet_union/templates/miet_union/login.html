@@ -7,7 +7,18 @@
     <div class="row mx-auto">
       <div class='col-md-6 offset-md-3'>
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h1 class="" style="text-align: center;">Войти в систему</h1>
+          <h1 class="" style="text-align: center; margin-bottom: 7px;">Войти в систему</h1>
+          {% if messages %}
+          {% for message in messages %}
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          <div class="alert alert-danger messages" style="margin-bottom: 7px;">
+            <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+              Внимание! {{ message }}<br />
+              </span>
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
           <form action="" method="post"> {% csrf_token %}
             <div class="fieldWrapper" style="margin-top: 7px">
               {{ form.username.errors }}
