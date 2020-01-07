@@ -58,76 +58,79 @@
         {% endfor %}
         {% endif %}
         {% if all_news and news_count > 5 %}
-        <nav aria-label="...">
-          <ul class="pagination mb-30">
-            <!--Pagination-->
-            {% if all_news.has_previous %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.previous_page_number }}"><i class="ion-chevron-left"></i></a>
-            </li>
-            {% endif %}
-            <!--Кнопка на первую страницу-->
-            {% if all_news.number > 3 %}
-            <li class="page-item ">
-              <a class="page-link" href="?page=1"> 1 <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            <!--Если до текущей страницы больше 3 страниц-->
-            {% if all_news.number|add:'-4' > 0 %}
-            <li class="page-item ">
-              <a class="page-link">... <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            {% if all_news.number|add:'-2' > 0 %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.number|add:'-2' }}">{{ all_news.number|add:'-2' }}
-                <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            {% if all_news.number|add:'-1' > 0 %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.number|add:'-1' }}">{{ all_news.number|add:'-1' }}
-                <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            <!--Текущая страница-->
-            {% if all_news.number %}
-            <li class="page-item active">
-              <a class="page-link">{{ all_news.number }} <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            {% if all_news.number|add:'1' <= all_news.paginator.num_pages %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.number|add:'1' }}">{{ all_news.number|add:'1' }}
-                <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            {% if all_news.number|add:'2' <= all_news.paginator.num_pages %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.number|add:'2' }}">{{ all_news.number|add:'2' }}
-                <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            <!--Если после текущей страницы больше 3 страниц-->
-            {% if all_news.number|add:'4' <= all_news.paginator.num_pages %}
-            <li class="page-item ">
-              <a class="page-link">... <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            <!--Кнопка на последнюю страницу-->
-            {% if all_news.number|add:'3' <= all_news.paginator.num_pages %}
-            <li class="page-item ">
-              <a class="page-link" href="?page={{ all_news.paginator.num_pages }}"> {{ all_news.paginator.num_pages }}
-                <span class="sr-only">(current)</span></a>
-            </li>
-            {% endif %}
-            <li class="page-item">
-              {% if all_news.has_next %}
-              <a class="page-link" href="?page={{ all_news.next_page_number }}"><i class="ion-chevron-right"></i></a>
+        <div class="d-flex justify-content-center">
+          <nav aria-label="...">
+            <ul class="pagination">
+              <!--Pagination-->
+              {% if all_news.has_previous %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.previous_page_number }}"><i
+                    class="ion-chevron-left"></i></a>
+              </li>
               {% endif %}
-            </li>
-          </ul>
-        </nav>
+              <!--Кнопка на первую страницу-->
+              {% if all_news.number > 3 %}
+              <li class="page-item ">
+                <a class="page-link" href="?page=1"> 1 <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              <!--Если до текущей страницы больше 3 страниц-->
+              {% if all_news.number|add:'-4' > 0 %}
+              <li class="page-item ">
+                <a class="page-link">... <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              {% if all_news.number|add:'-2' > 0 %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.number|add:'-2' }}">{{ all_news.number|add:'-2' }}
+                  <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              {% if all_news.number|add:'-1' > 0 %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.number|add:'-1' }}">{{ all_news.number|add:'-1' }}
+                  <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              <!--Текущая страница-->
+              {% if all_news.number %}
+              <li class="page-item active">
+                <a class="page-link">{{ all_news.number }} <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              {% if all_news.number|add:'1' <= all_news.paginator.num_pages %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.number|add:'1' }}">{{ all_news.number|add:'1' }}
+                  <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              {% if all_news.number|add:'2' <= all_news.paginator.num_pages %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.number|add:'2' }}">{{ all_news.number|add:'2' }}
+                  <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              <!--Если после текущей страницы больше 3 страниц-->
+              {% if all_news.number|add:'4' <= all_news.paginator.num_pages %}
+              <li class="page-item ">
+                <a class="page-link">... <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              <!--Кнопка на последнюю страницу-->
+              {% if all_news.number|add:'3' <= all_news.paginator.num_pages %}
+              <li class="page-item ">
+                <a class="page-link" href="?page={{ all_news.paginator.num_pages }}"> {{ all_news.paginator.num_pages }}
+                  <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+              <li class="page-item">
+                {% if all_news.has_next %}
+                <a class="page-link" href="?page={{ all_news.next_page_number }}"><i class="ion-chevron-right"></i></a>
+                {% endif %}
+              </li>
+            </ul>
+          </nav>
+        </div>
         {% endif %}
       </div><!-- col-sm-8 -->
       <!-- START OF SIDEBAR NEWSLETTER -->
