@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     from miet_union.email_config import (
@@ -21,8 +24,14 @@ try:
         EMAIL_USE_TLS,
         EMAIL_USE_SSL,
     )
+    EMAIL_HOST = EMAIL_HOST
+    EMAIL_PORT = EMAIL_PORT
+    EMAIL_HOST_USER = EMAIL_HOST_USER
+    EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+    EMAIL_USE_SSL = EMAIL_USE_SSL
+    EMAIL_USE_TLS = EMAIL_USE_TLS
 except ImportError:
-    pass  # this is private module
+    logger.error('email_config ImportError')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,14 +158,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # admin_tools settings
 ADMIN_TOOLS_INDEX_DASHBOARD = 'miet_union.dashboard.CustomIndexDashBoard'
-
-# email settings
-try:
-    EMAIL_HOST = EMAIL_HOST
-    EMAIL_PORT = EMAIL_PORT
-    EMAIL_HOST_USER = EMAIL_HOST_USER
-    EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
-    EMAIL_USE_SSL = EMAIL_USE_SSL
-    EMAIL_USE_TLS = EMAIL_USE_TLS
-except NameError:
-    pass  # email_config is private module

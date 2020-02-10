@@ -14,7 +14,7 @@ class CommissionsOfProfcom(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
-        """Return EmailSubscription email"""
+        """Return CommissionsOfProfcom title"""
         return self.title
 
     class Meta:

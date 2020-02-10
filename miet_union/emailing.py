@@ -1,7 +1,11 @@
+import logging
+
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from miet_union import settings
+
+logger = logging.getLogger(__name__)
 
 
 def send_email(instance, all_emails):
@@ -25,4 +29,4 @@ def send_email(instance, all_emails):
             fail_silently=False,
         )
     except NameError:
-        pass  # email_config is private module
+        logger.error('EMAIL_HOST_USER not found in send_email() ')
