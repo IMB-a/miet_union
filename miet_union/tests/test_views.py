@@ -14,7 +14,7 @@ class TestViews(TestCase):
     @classmethod
     def setUpClass(cls):
         super(TestViews, cls).setUpClass()
-        mixer.blend('news.News')
+        mixer.blend('miet_union.News')
         cls.factory = RequestFactory()
 
     def test_my_account_authenticated(self):
