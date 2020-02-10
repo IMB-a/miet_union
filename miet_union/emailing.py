@@ -5,6 +5,9 @@ from miet_union import settings
 
 
 def send_email(instance, all_emails):
+    """
+    Send email to all user emails in db
+    """
     context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
     context.update({'instance': instance})
     all_email_addr = []

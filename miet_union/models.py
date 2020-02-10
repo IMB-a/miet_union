@@ -14,6 +14,7 @@ class CommissionsOfProfcom(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return EmailSubscription email"""
         return self.title
 
     class Meta:
@@ -32,6 +33,7 @@ class EmailSubscription(models.Model):
         default=timezone.now, verbose_name='Дата подписки')
 
     def __str__(self):
+        """Return EmailSubscription email"""
         return self.email
 
     class Meta:
@@ -49,6 +51,7 @@ class News(models.Model):
         default=timezone.now, verbose_name='Дата создания')
 
     def __str__(self):
+        """Return News title"""
         return self.title
 
     class Meta:
@@ -63,6 +66,7 @@ class HelpForProforg(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return HelpForProforg title"""
         return self.title
 
     class Meta:
@@ -77,6 +81,7 @@ class HelpForStudentProforg(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return HelpForStudentProforg title"""
         return self.title
 
     class Meta:
@@ -91,6 +96,7 @@ class TheMainActivitiesOfProforg(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return TheMainActivitiesOfProforg title"""
         return self.title
 
     class Meta:
@@ -105,6 +111,7 @@ class ProtectionOfPersonalInformation(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return ProtectionOfPersonalInformation title"""
         return self.title
 
     class Meta:
@@ -119,6 +126,7 @@ class NormativeDocuments(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return NormativeDocuments title"""
         return self.title
 
     class Meta:
@@ -134,6 +142,7 @@ class UsefulLinks(models.Model):
         upload_to="documents/", verbose_name='Файл')
 
     def __str__(self):
+        """Return UsefulLinks title"""
         return self.title
 
     class Meta:
@@ -153,6 +162,7 @@ class Worker(models.Model):
         upload_to="workers/images", verbose_name='Фото')
 
     def __str__(self):
+        """Return Worker first_name"""
         return self.first_name
 
     class Meta:
@@ -190,6 +200,7 @@ class MoneyHelp(models.Model):
     )
 
     def __str__(self):
+        """Return MoneyHelp first_name"""
         return self.first_name
 
     class Meta:
@@ -200,6 +211,9 @@ class MoneyHelp(models.Model):
 
 # https://djangosnippets.org/snippets/10638/
 def _get_model_filefield_names(model):
+    """
+    Get model filefield names for auto_delete_file_on_delete func
+    """
     return list(
         f.name for f in model._meta.get_fields() if isinstance(
             f,
@@ -252,5 +266,8 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
 @receiver(models.signals.pre_save, sender=News)
 def send_emails(instance, *args, **kwargs):
+    """
+    Send email to all user emails in db
+    """
     all_emails = EmailSubscription.objects.all()
     send_email(instance, all_emails)
