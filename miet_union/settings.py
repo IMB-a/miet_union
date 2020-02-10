@@ -12,14 +12,17 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
-from miet_union.email_config import (
-    EMAIL_HOST,
-    EMAIL_PORT,
-    EMAIL_HOST_USER,
-    EMAIL_HOST_PASSWORD,
-    EMAIL_USE_TLS,
-    EMAIL_USE_SSL,
-)
+try:
+    from miet_union.email_config import (
+        EMAIL_HOST,
+        EMAIL_PORT,
+        EMAIL_HOST_USER,
+        EMAIL_HOST_PASSWORD,
+        EMAIL_USE_TLS,
+        EMAIL_USE_SSL,
+    )
+except ImportError:
+    pass  # this is private module
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
