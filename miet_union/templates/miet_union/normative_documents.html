@@ -1,19 +1,18 @@
 {% extends "miet_union/base.html" %}
 {% load static %}
-{% load django_bootstrap_breadcrumbs %}
 {% block title %} Законодательные, нормативные и уставные документы {% endblock %}
 {% block content %}
 <section class="">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12 col-lg-12">
-				<div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-					<div class="col-md-12 col-lg-12">
-						<p class="mtb-1">
-							<h1 style="text-align:center; color: black;"> Законодательные, нормативные и уставные документы
-							</h1>
-						</p>
-					</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-12">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <div class="col-md-12 col-lg-12">
+            <p class="mtb-1">
+              <h1 style="text-align:center; color: black;"> Законодательные, нормативные и уставные документы
+              </h1>
+            </p>
+          </div>
           {% for normative_document in normative_documents %}
           <p class="mtb-25">
             <h5 style="color: blue;">
@@ -21,9 +20,9 @@
             </h5>
           </p>
           {% endfor %}
-				</div>
-			</div><!-- col-sm-8 -->
-		</div><!-- row -->
-	</div><!-- container -->
+        </div>
+      </div><!-- col-sm-8 -->
+    </div><!-- row -->
+  </div><!-- container -->
 </section>
 {% endblock %}
