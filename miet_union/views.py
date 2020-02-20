@@ -239,3 +239,12 @@ def useful_links(request):
         'useful_links_documents': useful_links_documents,
     }
     return render(request, 'miet_union/useful_links.html', context)
+
+
+def unsubscribe_emailing(request, secret_key):
+    """
+    Delete EmailSubscription instance from db
+    """
+    EmailSubscription.objects.filter(secret_key=secret_key).delete()
+    messages.success(request, 'Вы успешно отписались')
+    return render(request, 'miet_union/home.html')

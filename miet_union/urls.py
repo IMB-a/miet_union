@@ -22,6 +22,7 @@ from .views import (
     social_card,
     test_404,
     useful_links,
+    unsubscribe_emailing,
 )
 
 urlpatterns = [
@@ -48,6 +49,8 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('test', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
+    path('unsubscribe/<slug:secret_key>', unsubscribe_emailing,
+         name='unsubscribe'),
 ]
 
 if settings.DEBUG:
