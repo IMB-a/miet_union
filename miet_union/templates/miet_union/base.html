@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
 {% load static %}
-{% load miet_union_extras %}
 <html lang="en">
 
 <head>
@@ -22,7 +21,7 @@
   <header>
     <div class="bottom-menu">
       <div class="container">
-        <a class="menu-nav-icon" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
+        <a class="menu-nav-icon pull-right" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
         <ul class="main-menu" id="main-menu">
           <li style="margin-right: 30px"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white.png'%}"
                 style="width: 60px;"></a>
@@ -33,13 +32,6 @@
             <ul class="drop-down-menu drop-down-inner">
               <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
               <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
-            </ul>
-          </li>
-          <li class="drop-down"><a>Мат. Помощь<i class="ion-chevron-down"></i></a>
-            <ul class="drop-down-menu drop-down-inner">
-              <li><a href="{% url 'money_help_for_students' %}">Студенту</a></li>
-              <li><a href="{% url 'money_help_for_graduate_students' %}">Аспиранту</a></li>
-              <li><a href="{% url 'money_help_for_workers' %}">Сотруднику</a></li>
             </ul>
           </li>
           <li class="drop-down"><a>Документы<i class="ion-chevron-down"></i></a>
@@ -97,22 +89,14 @@
   <footer class="color-white bg-primary pt-50 font-11" style="font-weight: 500">
     <div class="container">
       <div class="row">
-        <div class="col-lg-2 col-md-6 col-sm-8">
+        <div class="col-lg-3 col-md-4 col-sm-8">
           <h5 class="f-title"><b>Студенту</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
             <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-6 col-sm-6">
-          <h5 class="f-title"><b>Мат. Помощь</b></h5>
-          <ul class="mb-30 list-hover list-block list-a-ptb-5">
-            <li><a href="{% url 'money_help_for_students' %}">Студенту</a></li>
-            <li><a href="{% url 'money_help_for_graduate_students' %}">Аспиранту</a></li>
-            <li><a href="{% url 'money_help_for_workers' %}">Сотруднику</a></li>
-          </ul>
-        </div><!-- col-sm-4 -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-lg-4 col-md-5 col-sm-6">
           <h5 class="f-title"><b>Документы</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
@@ -121,7 +105,7 @@
             <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-6 col-sm-6">
+        <div class="col-lg-2 col-md-3 col-sm-6">
           <h5 class="f-title"><b>О нас</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
