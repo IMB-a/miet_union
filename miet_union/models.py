@@ -39,8 +39,14 @@ class EmailSubscription(models.Model):
     secret_key = models.CharField(
         max_length=30,
         verbose_name='Секретный ключ',
+        help_text='''Случайно сгерерованный ключ при сознании сущности
+        длинной в 30 символов.''',
         default=''.join(
             random.choice(_ascii) for _ in range(30))
+    )
+    is_confirmed = models.BooleanField(
+        verbose_name='Подтверждена',
+        default=False
     )
     created = models.DateTimeField(
         default=timezone.now, verbose_name='Дата подписки')
@@ -283,7 +289,6 @@ def send_emails(instance, *args, **kwargs):
     Send email to all user emails in db when
     new news is created
     """
-    print('pre_save send_emails')
     all_emails = EmailSubscription.objects.all()
     send_email(instance, all_emails)
 
@@ -299,22 +304,20 @@ def send_email(instance, all_emails):
     context.update({'instance': instance})
     all_email_addr = []
     for addr in all_emails:
-        all_email_addr.append(addr.email)
-        try:
-            email_instance = EmailSubscription.objects.get(email=addr.email)
-            context.update({'secret_key': email_instance.secret_key})
-            send_mail(
-                subject='Новоя новость на сайте профкома института МИЭТ',
-                message='Hello from django.',
-                # render with dynamic value
-                html_message=render_to_string(
-                    'miet_union/mail_template.html', context),
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=all_email_addr,
-                # recipient_list=list(addr.email),
-                fail_silently=False,
-            )
-            logger.info('Письмо отправляется ')
-            print('Письмо отправляется ')
-        except NameError:
-            logger.error('EMAIL_HOST_USER not found in send_email() ')
+        if addr.is_confirmed is True:
+            all_email_addr.append(addr.email)
+            try:
+                email_instance = EmailSubscription.objects.get(
+                    email=addr.email)
+                context.update({'secret_key': email_instance.secret_key})
+                send_mail(
+                    subject='Новоя новость на сайте профкома института МИЭТ',
+                    message='Hello from django.',
+                    html_message=render_to_string(
+                        'miet_union/mail_template.html', context),
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=all_email_addr,
+                    fail_silently=False,
+                )
+            except NameError:
+                logger.error('EMAIL_HOST_USER not found in send_email() ')

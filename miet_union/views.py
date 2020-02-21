@@ -1,3 +1,5 @@
+import logging
+
 from django.conf.urls import handler400, handler403, handler404, handler500  # noqa
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
@@ -5,16 +7,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
-
+from miet_union import settings
 from .forms import (
     EmailingForm,
     UserLoginForm,
     ChangePasswordForm,
 )
-
 from .models import (
     CommissionsOfProfcom,
     EmailSubscription,
@@ -28,6 +31,8 @@ from .models import (
     UsefulLinks,
     Worker,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -56,7 +61,7 @@ def home(request):
         else:
             new_email = EmailSubscription.objects.create(email=email)
             new_email.save()
-            messages.success(request, 'Вы успешно подписались')
+            send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
     form = UserLoginForm(request.POST or None)
@@ -248,3 +253,37 @@ def unsubscribe_emailing(request, secret_key):
     EmailSubscription.objects.filter(secret_key=secret_key).delete()
     messages.success(request, 'Вы успешно отписались')
     return render(request, 'miet_union/home.html')
+
+
+def subscribe_confirm(request, secret_key):
+    """
+    Confirm Subscription: EmailSubscription.is_confirmed = True
+    """
+    EmailSubscription.objects.filter(
+        secret_key=secret_key).update(is_confirmed=True)
+    messages.success(request, 'Вы успешно подписались')
+    return render(request, 'miet_union/home.html')
+
+
+def send_mail_to_subscribe_confirm(email):
+    """
+    Send emails to accounts with
+    EmailSubscription.is_confirmed is True
+    """
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
+    email_instance = EmailSubscription.objects.get(email=email)
+    context.update({'secret_key': email_instance.secret_key})
+    try:
+        send_mail(
+            subject='Подтверждение подписки',
+            message="""Пожалуйста подтвердите подписку на рассылку
+                    новостей от профкома МИЭТ""",
+            html_message=render_to_string(
+                'miet_union/subscribe_confirm.html', context),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except NameError:
+        logger.error('''EMAIL_HOST_USER not found in
+            send_mail_to_subscribe_confirm''')
