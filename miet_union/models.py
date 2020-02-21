@@ -1,11 +1,18 @@
+import logging
 import os
+import random
+import string
 
+from django.core.mail import send_mail
 from django.db import models
 from django.dispatch import receiver
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from miet_union.decorators import disable_for_loaddata
-from miet_union.emailing import send_email
+from miet_union import settings
+
+_ascii = string.ascii_uppercase + string.ascii_lowercase + string.digits
 
 
 class CommissionsOfProfcom(models.Model):
@@ -28,6 +35,18 @@ class EmailSubscription(models.Model):
         verbose_name='Электронная почта',
         unique=True,
         error_messages={'unique': "This email has already been registered."}
+    )
+    secret_key = models.CharField(
+        max_length=30,
+        verbose_name='Секретный ключ',
+        help_text='''Случайно сгерерованный ключ при сознании сущности
+        длинной в 30 символов.''',
+        default=''.join(
+            random.choice(_ascii) for _ in range(30))
+    )
+    is_confirmed = models.BooleanField(
+        verbose_name='Подтверждена',
+        default=False
     )
     created = models.DateTimeField(
         default=timezone.now, verbose_name='Дата подписки')
@@ -267,7 +286,38 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 @receiver(models.signals.pre_save, sender=News)
 def send_emails(instance, *args, **kwargs):
     """
-    Send email to all user emails in db
+    Send email to all user emails in db when
+    new news is created
     """
     all_emails = EmailSubscription.objects.all()
     send_email(instance, all_emails)
+
+
+logger = logging.getLogger(__name__)
+
+
+def send_email(instance, all_emails):
+    """
+    Send email to all user emails in db
+    """
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
+    context.update({'instance': instance})
+    all_email_addr = []
+    for addr in all_emails:
+        if addr.is_confirmed is True:
+            all_email_addr.append(addr.email)
+            try:
+                email_instance = EmailSubscription.objects.get(
+                    email=addr.email)
+                context.update({'secret_key': email_instance.secret_key})
+                send_mail(
+                    subject='Новоя новость на сайте профкома института МИЭТ',
+                    message='Hello from django.',
+                    html_message=render_to_string(
+                        'miet_union/mail_template.html', context),
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=all_email_addr,
+                    fail_silently=False,
+                )
+            except NameError:
+                logger.error('EMAIL_HOST_USER not found in send_email() ')

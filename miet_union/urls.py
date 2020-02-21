@@ -20,8 +20,10 @@ from .views import (
     prof_souz,
     registration,
     social_card,
+    subscribe_confirm,
     test_404,
     useful_links,
+    unsubscribe_emailing,
 )
 
 urlpatterns = [
@@ -45,9 +47,13 @@ urlpatterns = [
     path('prof_souz', prof_souz, name='prof_souz'),
     path('registration', registration, name='registration'),
     path('social_card', social_card, name='social_card'),
+    path('subscribe/<slug:secret_key>', subscribe_confirm,
+         name='subscribe_confirm'),
     path('summernote/', include('django_summernote.urls')),
     path('test', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
+    path('unsubscribe/<slug:secret_key>', unsubscribe_emailing,
+         name='unsubscribe'),
 ]
 
 if settings.DEBUG:
