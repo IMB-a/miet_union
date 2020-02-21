@@ -30,8 +30,10 @@ class EmailSubscriptionAdmin(admin.ModelAdmin):
     class Meta:
         model = Worker
     list_display = ('email',
-                    'created'
+                    'is_confirmed',
+                    'created',
                     )
+    list_filter = ('is_confirmed', 'created')
 
 
 class MoneyHelpAdmin(SummernoteModelAdmin):
