@@ -1,3 +1,5 @@
+import logging
+
 from django.conf.urls import handler400, handler403, handler404, handler500  # noqa
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
@@ -5,17 +7,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
-
+from miet_union import settings
 from .forms import (
-    EmailingForm,
-    StudentMoneyForm,
-    UserLoginForm,
     ChangePasswordForm,
+    EmailingForm,
+    SearchNewsForm,
+    UserLoginForm,
 )
-
 from .models import (
     CommissionsOfProfcom,
     EmailSubscription,
@@ -30,7 +33,7 @@ from .models import (
     Worker,
 )
 
-from pdf.pdfed import pdf_money
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -59,22 +62,21 @@ def home(request):
         else:
             new_email = EmailSubscription.objects.create(email=email)
             new_email.save()
-            messages.success(request, 'Вы успешно подписались')
+            send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
-    form = UserLoginForm(request.POST or None)
-    next_ = request.GET.get('next')
-    if form.is_valid():
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username.strip(),
-                            password=password.strip())
-        login(request, user)
-        next_post = request.POST.get('next')
-        rederict_path = next_ or next_post or '/'
-        return redirect(rederict_path)
+    search_news_form = SearchNewsForm(request.POST or None)
+    if search_news_form.is_valid():
+        res_news_context = {}
+        str_input = request.POST.get('str_input')
+        title_res, main_text_res = News.search_news(str_input)
+        res_news_context.update({'title_res': title_res,
+                                 'main_text_res': main_text_res,
+                                 'search_news_form': search_news_form,
+                                 'email_form': email_form})
+        return render(request, 'miet_union/search_news.html', res_news_context)
+    context.update({'search_news_form': search_news_form})
 
-    context.update({'form': form})
     return render(request, 'miet_union/home.html', context)
 
 
@@ -180,50 +182,6 @@ def error_500(request):
     return render(request, 'miet_union/500.html')
 
 
-def money_help_for_students(request):
-    form = StudentMoneyForm(request.POST or None)
-    if form.is_valid():
-        full_name = request.POST.get('full_name')
-        group = request.POST.get('group')
-        address = request.POST.get('address')
-        reason = request.POST.get('reason')
-        date_and_month_of_last_request = request.POST.get(
-            'date_and_month_of_last_request')
-        year_of_last_request = request.POST.get('year_of_last_request')
-        passport_number_part_one = request.POST.get('passport_number_part_one')
-        passport_number_part_two = request.POST.get('passport_number_part_two')
-        date_of_issue = request.POST.get('date_of_issue')
-        place_of_issue = request.POST.get('place_of_issue')
-        phone_number = request.POST.get('phone_number')
-
-        pdf_money(
-            full_name,
-            group,
-            address,
-            reason,
-            date_and_month_of_last_request,
-            year_of_last_request,
-            passport_number_part_one,
-            passport_number_part_two,
-            date_of_issue,
-            place_of_issue,
-            phone_number,
-        )
-    return render(
-        request,
-        'miet_union/money_help_for_students.html',
-        {"form": form},
-    )
-
-
-def money_help_for_graduate_students(request):
-    return render(request, 'miet_union/money_help_for_graduate_students.html')
-
-
-def money_help_for_workers(request):
-    return render(request, 'miet_union/money_help_for_workers.html')
-
-
 def test(request):
     return render(request, 'miet_union/test.html')
 
@@ -286,3 +244,46 @@ def useful_links(request):
         'useful_links_documents': useful_links_documents,
     }
     return render(request, 'miet_union/useful_links.html', context)
+
+
+def unsubscribe_emailing(request, secret_key):
+    """
+    Delete EmailSubscription instance from db
+    """
+    EmailSubscription.objects.filter(secret_key=secret_key).delete()
+    messages.success(request, 'Вы успешно отписались')
+    return render(request, 'miet_union/home.html')
+
+
+def subscribe_confirm(request, secret_key):
+    """
+    Confirm Subscription: EmailSubscription.is_confirmed = True
+    """
+    EmailSubscription.objects.filter(
+        secret_key=secret_key).update(is_confirmed=True)
+    messages.success(request, 'Вы успешно подписались')
+    return render(request, 'miet_union/home.html')
+
+
+def send_mail_to_subscribe_confirm(email):
+    """
+    Send emails to accounts with
+    EmailSubscription.is_confirmed is True
+    """
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
+    email_instance = EmailSubscription.objects.get(email=email)
+    context.update({'secret_key': email_instance.secret_key})
+    try:
+        send_mail(
+            subject='Подтверждение подписки',
+            message="""Пожалуйста подтвердите подписку на рассылку
+                    новостей от профкома МИЭТ""",
+            html_message=render_to_string(
+                'miet_union/subscribe_confirm.html', context),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except NameError:
+        logger.error('''EMAIL_HOST_USER not found in
+            send_mail_to_subscribe_confirm''')

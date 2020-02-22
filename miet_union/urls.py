@@ -11,9 +11,6 @@ from .views import (
     home,
     login_view,
     logout_view,
-    money_help_for_graduate_students,
-    money_help_for_students,
-    money_help_for_workers,
     my_account,
     news_page,
     normative_documents,
@@ -23,8 +20,10 @@ from .views import (
     prof_souz,
     registration,
     social_card,
+    subscribe_confirm,
     test_404,
     useful_links,
+    unsubscribe_emailing,
 )
 
 urlpatterns = [
@@ -37,12 +36,6 @@ urlpatterns = [
     path('help_prof_org', help_prof_org, name='help_prof_org'),
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
-    path('money_help_for_graduate_students', money_help_for_graduate_students,
-         name='money_help_for_graduate_students'),
-    path('money_help_for_students', money_help_for_students,
-         name='money_help_for_students'),
-    path('money_help_for_workers', money_help_for_workers,
-         name='money_help_for_workers'),
     path('my_account', my_account, name='my_account'),
     path('news/<int:pk>', news_page, name='news_page'),
     path('normative_documents', normative_documents,
@@ -54,9 +47,13 @@ urlpatterns = [
     path('prof_souz', prof_souz, name='prof_souz'),
     path('registration', registration, name='registration'),
     path('social_card', social_card, name='social_card'),
+    path('subscribe/<slug:secret_key>', subscribe_confirm,
+         name='subscribe_confirm'),
     path('summernote/', include('django_summernote.urls')),
     path('test', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
+    path('unsubscribe/<slug:secret_key>', unsubscribe_emailing,
+         name='unsubscribe'),
 ]
 
 if settings.DEBUG:

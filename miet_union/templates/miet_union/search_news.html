@@ -1,0 +1,168 @@
+{% extends "miet_union/base.html" %}
+{% load static %}
+{% block title %} Новость {% endblock %}
+
+{% block content %}
+<section class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-8">
+        {% if title_res %}
+        <h4 class="p-title"><b>Совпадение по названию новостей</b></h4>
+        {% for news in title_res %}
+        <div class="mb-30 card-view">
+          <div class="container">
+            <div class="row">
+              <!-- for non mobile -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+              </div><!-- left-area -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+                <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /for non mobile -->
+
+              <!-- only for mobile -->
+              <div class="col-sm-6 d-block d-sm-none">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+              </div><!-- right-area -->
+              <div class="col-sm-6 d-block d-sm-none" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+                <ul class="mtb-10 list-li-mr-20 color-lite-black " style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /only for mobile -->
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% if main_text_res %}
+        <h4 class="p-title"><b>Совпадение по тексту новостей</b></h4>
+        {% for news in main_text_res %}
+        <div class="mb-30 card-view">
+          <div class="container">
+            <div class="row">
+              <!-- for non mobile -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+              </div><!-- left-area -->
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+                <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /for non mobile -->
+
+              <!-- only for mobile -->
+              <div class="col-sm-6 d-block d-sm-none">
+                <h4><a href="{% url 'news_page' pk=news.pk %}"
+                    style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
+                    {{ news.title|truncatechars:100 }}</a></h4>
+              </div><!-- right-area -->
+              <div class="col-sm-6 d-block d-sm-none" style="padding: 0px;">
+                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+                <ul class="mtb-10 list-li-mr-20 color-lite-black " style="float: right; position: sticky; top: 100%;">
+                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                </ul>
+              </div><!-- /only for mobile -->
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% if not title_res and not main_text_res %}
+        <h4 class="p-title"><b>Сопадений не найдено</b></h4>
+        {% endif %}
+
+      </div>
+      <div class="col-md-12 col-lg-4 d-none d-lg-block">
+        <div class="mb-30 mt-md-30 p-30 card-view">
+          <h4 class="p-title"><b>Мы вконтакте</b></h4>
+          <ul>
+            <script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
+            <!-- VK Widget -->
+            <div id="vk_groups"></div>
+            <script type="text/javascript">
+              VK.Widgets.Group("vk_groups", {
+                mode: 3,
+                width: "auto",
+                no_cover: 0,
+              }, 20030105);
+            </script>
+          </ul>
+        </div><!-- card-view -->
+        <div class="mb-30 mt-md-30 p-30 card-view">
+          <h4 class="p-title"><b>Поиск по новостям</h4>
+          <form action="" method="post"> {% csrf_token %}
+            {{ search_news_form.str_input }}
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Найти
+            </button>
+          </form>
+        </div><!-- card-view -->
+        <div class="mb-30 mt-md-30 p-30 card-view">
+          <h4 class="p-title"><b>Уведомления</b></h4>
+          {% if messages %}
+          <div class="container my-2" style="padding: 0px; font-weight: 500;">
+            <div class="row">
+              <div class="col-md-12 mx-auto">
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    Внимание! {{ message }}<br />
+                    </span>
+                </div>
+                {% else %}
+                <div class="alert alert-success messages">
+                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}<br />
+                    </span>
+                </div>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          <form action="" method="post"> {% csrf_token %}
+            {{ email_form.email }}
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Подписаться
+            </button>
+          </form>
+        </div><!-- card-view -->
+        <div class="mb-30 mt-md-30 p-30 card-view" style="font-weight: 500">
+          <h4 class="p-title"><b>Наш офис</b></h4>
+          <ul class="list-contact list-li-mb-20">
+            <li><i class="ion-ios-home" style="font-size: 1.7em;"></i>124498, Россия, Москва, Зеленоград, Площадь
+              Шокина, дом 1. ауд (1206, 1206а)
+            </li>
+            <li><a href="#"><i class="ion-ios-telephone" style="font-size: 1.7em;"></i>8 (499) 710-14-47</a></li>
+            <li>
+              <ul>
+                <li><a href="#"><i class="ion-email" style="font-size: 1.7em;"></i>profcom@miee.ru</a></li>
+                <li><a href="#"><i class="ion-email" style="font-size: 1.7em;"></i>profcom-miet@mail.ru</a></li>
+              </ul>
+            </li>
+            <li class="mb-0"><a href="https://miet.ru/structure/s/1905/e/50497/355"><i class="ion-ios-world"
+                  style="font-size: 1.7em;"></i>https://miet.ru/profcom</a></li>
+            </li>
+        </div><!-- card-view -->
+        <!-- END OF SIDEBAR NEWSLETTER -->
+      </div><!-- col-sm-4 -->
+    </div><!-- row -->
+  </div><!-- container -->
+</section>
+{% endblock %}
