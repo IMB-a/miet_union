@@ -65,7 +65,10 @@ class News(models.Model):
     title = models.CharField(max_length=250, verbose_name='Заголовок')
     main_text = models.TextField(verbose_name='Текст новости')
     image = models.FileField(
-        upload_to="news/images", verbose_name='Изображение')
+        upload_to="news/images",
+        verbose_name='Изображение',
+        help_text='''Рекомендация: изображение должно быть
+        в горизонтальной форме, в идеале в формате 16:9''')
     created = models.DateTimeField(
         default=timezone.now, verbose_name='Дата создания')
 
