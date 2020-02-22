@@ -14,9 +14,10 @@ from django.template.loader import render_to_string
 
 from miet_union import settings
 from .forms import (
-    EmailingForm,
-    UserLoginForm,
     ChangePasswordForm,
+    EmailingForm,
+    SearchNewsForm,
+    UserLoginForm,
 )
 from .models import (
     CommissionsOfProfcom,
@@ -64,19 +65,18 @@ def home(request):
             send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
-    form = UserLoginForm(request.POST or None)
-    next_ = request.GET.get('next')
-    if form.is_valid():
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username.strip(),
-                            password=password.strip())
-        login(request, user)
-        next_post = request.POST.get('next')
-        rederict_path = next_ or next_post or '/'
-        return redirect(rederict_path)
+    search_news_form = SearchNewsForm(request.POST or None)
+    if search_news_form.is_valid():
+        res_news_context = {}
+        str_input = request.POST.get('str_input')
+        title_res, main_text_res = News.search_news(str_input)
+        res_news_context.update({'title_res': title_res,
+                                 'main_text_res': main_text_res,
+                                 'search_news_form': search_news_form,
+                                 'email_form': email_form})
+        return render(request, 'miet_union/search_news.html', res_news_context)
+    context.update({'search_news_form': search_news_form})
 
-    context.update({'form': form})
     return render(request, 'miet_union/home.html', context)
 
 

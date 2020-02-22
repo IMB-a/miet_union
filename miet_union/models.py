@@ -73,6 +73,18 @@ class News(models.Model):
         """Return News title"""
         return self.title
 
+    def search_news(str_input):
+        """
+        Return instances with filter if exists
+        """
+        title_res = News.objects.none()
+        main_text_res = News.objects.none()
+        if News.objects.filter(title__contains=str_input):
+            title_res = News.objects.filter(title__contains=str_input)
+        if News.objects.filter(main_text__contains=str_input):
+            main_text_res = News.objects.filter(main_text__contains=str_input)
+        return title_res, main_text_res
+
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
