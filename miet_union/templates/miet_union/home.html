@@ -150,14 +150,13 @@
           </ul>
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Поиск по новостям<br>(в разработке)</br></h4>
-          <p class="text-center" style="margin-bottom: 20px;">Найти новость</p>
-          <form class="form-sm max-w-400x mlr-auto">
-            <input type="email" placeholder="Введите название новости">
-            <h6>
-              <button class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block" type="submit"
-                style="font-size: 1.1em;"><b>Найти</b></button>
-            </h6>
+          <h4 class="p-title"><b>Поиск по новостям</h4>
+          <form action="" method="post"> {% csrf_token %}
+            {{ search_news_form.str_input }}
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Найти
+            </button>
           </form>
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
@@ -186,7 +185,7 @@
           </div>
           {% endif %}
           <form action="" method="post"> {% csrf_token %}
-            {{ email_form }}
+            {{ email_form.email }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Подписаться

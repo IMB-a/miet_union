@@ -20,6 +20,13 @@ class EmailingForm(forms.Form):
                                        'placeholder': 'Электронная почта'}))
 
 
+class SearchNewsForm(forms.Form):
+    str_input = forms.CharField(
+        label='',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Ключевые слова'}))
+
+
 class UserLoginForm(forms.Form):
     username = forms.CharField(
         label='Имя пользователя',
