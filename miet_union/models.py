@@ -76,6 +76,7 @@ class News(models.Model):
         """Return News title"""
         return self.title
 
+    @staticmethod
     def search_news(str_input):
         """
         Return instances with filter if exists
