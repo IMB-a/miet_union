@@ -23,7 +23,7 @@ from .views import (
     subscribe_confirm,
     test_404,
     useful_links,
-    unsubscribe_emailing,
+    unsubscribe_emailing_in_url,
 )
 
 urlpatterns = [
@@ -52,7 +52,7 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('test', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
-    path('unsubscribe/<slug:secret_key>', unsubscribe_emailing,
+    path('unsubscribe/<slug:secret_key>', unsubscribe_emailing_in_url,
          name='unsubscribe'),
 ]
 
