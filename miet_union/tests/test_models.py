@@ -17,6 +17,15 @@ class TestModels:
         assert news
         assert news.__str__()
 
+    def test_search_news(self):
+        news = mixer.blend('miet_union.News',
+                           title='test title',
+                           main_text='test main text',
+                           image=None,
+                           created=timezone.now,
+                           )
+        assert news.search_news('test')
+
     def test_worker_have_first_name(self):
         worker = mixer.blend('miet_union.Worker',
                              first_name='test_title',
