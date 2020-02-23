@@ -300,7 +300,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
 
 @receiver(models.signals.pre_save, sender=News)
-def send_emails(instance, *args, **kwargs):
+def send_emails_when_news_pre_save(instance, *args, **kwargs):
     """
     Send email to all user emails in db when
     new news is created
@@ -316,8 +316,8 @@ def send_email(instance, all_emails):
     """
     Send email to all user emails in db
     """
-    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
-    context.update({'instance': instance})
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS,
+               'instance': instance}
     all_email_addr = []
     for addr in all_emails:
         if addr.is_confirmed is True:

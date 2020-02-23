@@ -16,6 +16,7 @@ from miet_union import settings
 from .forms import (
     ChangePasswordForm,
     EmailingForm,
+    EmailingUnsubscribeForm,
     SearchNewsForm,
     UserLoginForm,
 )
@@ -56,9 +57,13 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        if email and EmailSubscription.objects.filter(email=email):
-            if EmailSubscription.objects.get(email=email):
+        if EmailSubscription.objects.filter(email=email):
+            if EmailSubscription.objects.get(email=email).is_confirmed is True:
                 messages.error(request, 'Вы уже подписаны')
+            else:
+                messages.info(request, '''Вы уже отправляли заявку,
+                                          выслана новая.''')
+                send_mail_to_subscribe_confirm(email)
         else:
             new_email = EmailSubscription.objects.create(email=email)
             new_email.save()
@@ -128,11 +133,13 @@ def login_view(request):
 @login_required
 def my_account(request):
     context = {}
+    # TODO refactor this code ---
     if MoneyHelp.objects.filter(first_name=request.user.first_name,
                                 last_name=request.user.last_name):
         money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
                                            last_name=request.user.last_name)
         context.update({'money_help': money_help})
+    # TODO ---
     change_password_form = ChangePasswordForm(request.POST or None)
     context.update({'change_password_form': change_password_form})
     user = User.objects.get(username=request.user)
@@ -153,6 +160,43 @@ def my_account(request):
                 messages.error(request, 'Пароли не совпадают')
         else:
             messages.error(request, 'Неправельный пароль')
+
+    email = None
+    if EmailSubscription.objects.filter(email=request.user.email):
+        email = EmailSubscription.objects.get(email=request.user.email)
+
+    if not email:
+        email_form = EmailingForm(request.POST or None)
+        if email_form.is_valid():
+            # then subscribe form and send subscribe_confirm message
+            new_email = EmailSubscription.objects.create(
+                email=request.user.email)
+            new_email.save()
+            send_mail_to_subscribe_confirm(new_email.email)
+            messages.info(request, '''Заявка отправлена''')
+        context.update({'email_form': email_form})
+        return render(request, 'miet_union/my_account.html', context)
+
+    elif email and email.is_confirmed is False:
+        # then subscribe form and resend subscribe_confirm message
+        email_form = EmailingForm(request.POST or None)
+        if email_form.is_valid():
+            send_mail_to_subscribe_confirm(request.user.email)
+            messages.info(request, '''Вы уже отправляли заявку,
+                                    выслана новая.''')
+        context.update({'email_form': email_form})
+        return render(request, 'miet_union/my_account.html', context)
+
+    elif email and email.is_confirmed is True:
+        # then unsubscribe form
+        email_unsubscribe_form = EmailingUnsubscribeForm(
+            request.POST or None)
+        if email_unsubscribe_form.is_valid():
+            unsubscribe_emailing(email.secret_key)
+            messages.success(request, 'Вы успешно отписались')
+        context.update({'email_unsubscribe_form': email_unsubscribe_form})
+        return render(request, 'miet_union/my_account.html', context)
+
     return render(request, 'miet_union/my_account.html', context)
 
 
@@ -246,13 +290,20 @@ def useful_links(request):
     return render(request, 'miet_union/useful_links.html', context)
 
 
-def unsubscribe_emailing(request, secret_key):
+def unsubscribe_emailing_in_url(request, secret_key):
+    """
+    Delete EmailSubscription instance from db
+    """
+    unsubscribe_emailing(secret_key)
+    messages.success(request, 'Вы успешно отписались')
+    return render(request, 'miet_union/home.html')
+
+
+def unsubscribe_emailing(secret_key):
     """
     Delete EmailSubscription instance from db
     """
     EmailSubscription.objects.filter(secret_key=secret_key).delete()
-    messages.success(request, 'Вы успешно отписались')
-    return render(request, 'miet_union/home.html')
 
 
 def subscribe_confirm(request, secret_key):
@@ -262,7 +313,7 @@ def subscribe_confirm(request, secret_key):
     EmailSubscription.objects.filter(
         secret_key=secret_key).update(is_confirmed=True)
     messages.success(request, 'Вы успешно подписались')
-    return render(request, 'miet_union/home.html')
+    return redirect('/')
 
 
 def send_mail_to_subscribe_confirm(email):

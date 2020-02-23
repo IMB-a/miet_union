@@ -15,7 +15,16 @@ class ChangePasswordForm(forms.Form):
 
 class EmailingForm(forms.Form):
     email = forms.EmailField(
-        label='',
+        required=False,
+        label='EmailingForm',
+        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                       'placeholder': 'Электронная почта'}))
+
+
+class EmailingUnsubscribeForm(forms.Form):
+    email = forms.EmailField(
+        required=False,
+        label='EmailingUnsubscribeForm',
         widget=forms.EmailInput(attrs={'class': 'form-control',
                                        'placeholder': 'Электронная почта'}))
 
