@@ -2,7 +2,6 @@ from admin_tools.dashboard import Dashboard
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 
-
 from miet_union.models import (
     CommissionsOfProfcom,
     EmailSubscription,
@@ -14,6 +13,7 @@ from miet_union.models import (
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
+    User,
     Worker,
 )
 
@@ -24,6 +24,18 @@ class CustomDashboard(Dashboard):
 
     def __init__(self, **kwargs):
         Dashboard.__init__(**kwargs)
+
+
+class UserAdmin(admin.ModelAdmin):
+    class Meta:
+        model = User
+    list_display = ('email',
+                    'first_name',
+                    'middle_name',
+                    'last_name',)
+    list_filter = ('date_joined',
+                   'is_account_confirmed',
+                   'is_email_subscription_confirmed')
 
 
 class EmailSubscriptionAdmin(admin.ModelAdmin):
@@ -126,6 +138,7 @@ admin.site.index_title = ('Профком')
 admin.site.site_title = ('Административная консоль')
 
 
+admin.site.register(User, UserAdmin)
 admin.site.register(EmailSubscription, EmailSubscriptionAdmin)
 admin.site.register(CommissionsOfProfcom, CommissionsOfProfcomAdmin)
 admin.site.register(HelpForProforg, HelpForProforgAdmin)

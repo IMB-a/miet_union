@@ -51,8 +51,8 @@
           </li>
           {% if user.is_authenticated %}
           <li class="drop-down" style="float: right;"><a>
-              {% if user.first_name %}
-              {{ user.first_name }}
+              {% if user %}
+              {{ user.get_short_name }}
               {% else %}
               Имя не указано
               {% endif %}

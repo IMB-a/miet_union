@@ -64,9 +64,12 @@ class User(AbstractBaseUser):
         ('approved', 'Одобрена'),
         ('rejected', 'Отклонена')
     ]
-    first_name = models.CharField(_('first name'), max_length=255, blank=True, null=True)
-    middle_name = models.CharField(_('middlename'), max_length=255, blank=True, null=True)
-    last_name = models.CharField(_('last name'), max_length=255, blank=True, null=True)
+    last_name = models.CharField(
+        _('last name'), max_length=255, blank=True, null=True)
+    first_name = models.CharField(
+        _('first name'), max_length=255, blank=True, null=True)
+    middle_name = models.CharField(
+        verbose_name='Отчество', max_length=255, blank=True, null=True)
     email = models.EmailField(_('email address'), unique=True)
     staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -319,9 +322,12 @@ class UsefulLinks(models.Model):
 
 
 class Worker(models.Model):
-    first_name = models.CharField(max_length=100, verbose_name='Имя', null=True)
-    last_name = models.CharField(max_length=100, verbose_name='Фамилия', null=True)
-    middle_name = models.CharField(max_length=100, verbose_name='Отчество', null=True)
+    first_name = models.CharField(
+        max_length=100, verbose_name='Имя', null=True)
+    last_name = models.CharField(
+        max_length=100, verbose_name='Фамилия', null=True)
+    middle_name = models.CharField(
+        max_length=100, verbose_name='Отчество', null=True)
     position = models.CharField(max_length=100, verbose_name="Должность")
     phone_num = models.CharField(max_length=11, verbose_name='Номер телефона')
     email = models.EmailField(max_length=254, verbose_name='Электронная почта')
