@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'django_bootstrap_breadcrumbs',
     'django_summernote',
     # our apps
     'miet_union',
