@@ -8,7 +8,15 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view" style="min-height: 368px">
           <h4 class="p-title"><b>Личная информация</b></h4>
-          <h4><b>{{ user.first_name }} {{ user.last_name }}</b></h4>
+          <h4><b>{{ user.last_name }} {{ user.first_name }} {{user.middle_name}} -
+              {% if user.rank == 'student' %}
+              Студент
+              {% elif user.rank == 'graduate_student' %}
+              Аспирант
+              {% elif user.rank == 'worker' %}
+              Сотрудник
+              {% endif %}
+            </b></h4>
           <ul class="list-contact list-li-mb-20" style="margin-top: 5px">
             <li><i class="ion-email" style="font-size: 1.7em;"></i>{{ user.email }}</a></li>
           </ul>
@@ -57,13 +65,13 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
-          {% if money_help.status == 'no_info' %}
+          {% if user.financial_assistance_status == 'no_info' %}
           <h5>Нет инфомации</h5>
-          {% elif money_help.status == 'in_progress' %}
+          {% elif user.financial_assistance_status == 'in_progress' %}
           <h5>В процессе</h5>
-          {% elif money_help.status == 'approved' %}
+          {% elif user.financial_assistance_status == 'approved' %}
           <h5>Одобрена</h5>
-          {% elif money_help.status == 'rejected' %}
+          {% elif user.financial_assistance_status == 'rejected' %}
           <h5>Отклонена</h5>
           {% endif %}
         </div>
@@ -94,7 +102,6 @@
             </div>
           </div>
           {% endif %}
-
           {% if email_form %}
           <form action="" method="post"> {% csrf_token %}
             {{ email_form.label }}
@@ -104,7 +111,6 @@
             </button>
           </form>
           {% endif %}
-
           {% if email_unsubscribe_form %}
           <form action="" method="post"> {% csrf_token %}
             {{ email_unsubscribe_form.label }}
@@ -114,7 +120,6 @@
             </button>
           </form>
           {% endif %}
-
         </div><!-- card-view -->
       </div>
     </div><!-- row -->

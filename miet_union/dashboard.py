@@ -37,12 +37,6 @@ class CustomIndexDashBoard(Dashboard):
                 models=('miet_union.models.HelpForProforg',),
             )
         )
-        self.children.append(
-            modules.ModelList(
-                title=('Работники Профкома'),
-                models=('miet_union.models.MoneyHelp',),
-            )
-        )
         self.children.append(modules.Group(
             title=("Документы"),
             display="tabs",

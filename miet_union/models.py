@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, first_name=None, middle_name=None,
                     last_name=None, password=None, is_active=None,
-                    is_staff=None, is_admin=None):
+                    rank=None, is_staff=None, is_admin=None):
         """
         Create and save a user with the given email, and password.
         """
@@ -38,6 +38,7 @@ class UserManager(BaseUserManager):
                           last_name=last_name)
         user.set_password(password)
         user.admin = is_admin
+        user.rank = rank
         user.staff = is_staff
         user.active = is_active
         user.save(using=self._db)
@@ -64,17 +65,24 @@ class User(AbstractBaseUser):
         ('approved', 'Одобрена'),
         ('rejected', 'Отклонена')
     ]
+    rank_choices = [
+        ('student', 'Студент'),
+        ('graduate_student', 'Аспирант'),
+        ('worker', 'Сотрудник')
+    ]
+    email = models.EmailField(_('email address'), unique=True)
     last_name = models.CharField(
         _('last name'), max_length=255, blank=True, null=True)
     first_name = models.CharField(
         _('first name'), max_length=255, blank=True, null=True)
     middle_name = models.CharField(
         verbose_name='Отчество', max_length=255, blank=True, null=True)
-    email = models.EmailField(_('email address'), unique=True)
-    staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    admin = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    rank = models.CharField(
+        max_length=250,
+        default='student',
+        choices=rank_choices,
+        verbose_name='Кем является'
+    )
     financial_assistance_status = models.CharField(
         max_length=250,
         default='no_info',
@@ -97,6 +105,10 @@ class User(AbstractBaseUser):
         verbose_name='Подписка на рассылку подтверждена',
         default=False
     )
+    staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    admin = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -341,44 +353,6 @@ class Worker(models.Model):
     class Meta:
         verbose_name = 'Работник'
         verbose_name_plural = 'Работники'
-        ordering = ['last_name']
-
-
-class MoneyHelp(models.Model):
-    status_choices = [
-        ('no_info', 'Нет информации'),
-        ('in_progress', 'На рассмотрении'),
-        ('approved', 'Одобрена'),
-        ('rejected', 'Отклонена')
-    ]
-    rank_choices = [
-        ('student', 'Студент'),
-        ('graduate_student', 'Аспирант'),
-        ('worker', 'Сотрудник')
-    ]
-    first_name = models.CharField(max_length=250, verbose_name='Имя')
-    middle_name = models.CharField(max_length=250, verbose_name='Отчество')
-    last_name = models.CharField(max_length=250, verbose_name='Фамилия')
-    status = models.CharField(
-        max_length=250,
-        default='no_info',
-        choices=status_choices,
-        verbose_name='Статус'
-    )
-    rank = models.CharField(
-        max_length=250,
-        default='no_info',
-        choices=rank_choices,
-        verbose_name='Студент, Аспирант или Сотрудник'
-    )
-
-    def __str__(self):
-        """Return MoneyHelp first_name"""
-        return self.first_name
-
-    class Meta:
-        verbose_name = 'Материальная помощь'
-        verbose_name_plural = 'Материальная помощь'
         ordering = ['last_name']
 
 

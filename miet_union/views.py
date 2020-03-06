@@ -4,9 +4,7 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
@@ -19,19 +17,20 @@ from .forms import (
     EmailingUnsubscribeForm,
     SearchNewsForm,
     UserLoginForm,
+    UserRegistrationForm,
 )
 from .models import (
     CommissionsOfProfcom,
     EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
-    MoneyHelp,
     News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
     Worker,
+    User,
 )
 
 logger = logging.getLogger(__name__)
@@ -94,17 +93,28 @@ def our_team(request):
 
 
 def registration(request):
-    form = UserCreationForm(data=request.POST or None)
-    next_ = request.GET.get('next')
-    if request.method == 'POST' and form.is_valid():
-        next_post = request.POST.get('next')
-        redirect_path = next_ or next_post or '/'   # noqa
-        form.save()
+    form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        middle_name = request.POST.get('middle_name')
+        rank = request.POST.get('rank')
+        user = User.objects.create_user(email=email,
+                                        first_name=first_name,
+                                        middle_name=middle_name,
+                                        last_name=last_name,
+                                        password=password,
+                                        is_active=True,
+                                        rank=rank,
+                                        is_staff=False,
+                                        is_admin=False)
+        user.save()
+        print('1')
         # login after registration
-        username = request.POST.get('username')
-        password1 = request.POST.get('password1')
-        user = authenticate(username=username.strip(),
-                            password=password1.strip())
+        user = authenticate(email=email.strip(),
+                            password=password.strip())
         login(request, user)
 
         return redirect('/my_account')
@@ -116,9 +126,9 @@ def login_view(request):
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
     if form.is_valid():
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=username.strip(),
+        user = authenticate(email=email.strip(),
                             password=password.strip())
         if user:
             login(request, user)
@@ -133,16 +143,9 @@ def login_view(request):
 @login_required
 def my_account(request):
     context = {}
-    # TODO refactor this code ---
-    if MoneyHelp.objects.filter(first_name=request.user.first_name,
-                                last_name=request.user.last_name):
-        money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
-                                           last_name=request.user.last_name)
-        context.update({'money_help': money_help})
-    # TODO ---
     change_password_form = ChangePasswordForm(request.POST or None)
     context.update({'change_password_form': change_password_form})
-    user = User.objects.get(username=request.user)
+    user = User.objects.get(email=request.user.email)
     current_password_from_requst = request.user.password
     if change_password_form.is_valid():
         current_password_from_form = request.POST.get(

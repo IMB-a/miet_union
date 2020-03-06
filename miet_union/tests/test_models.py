@@ -95,17 +95,3 @@ class TestModels:
         )
         assert useful_links
         assert useful_links.__str__()
-
-    def test_money_help_have_first_name(self):
-        money_help = mixer.blend(
-            'miet_union.MoneyHelp',
-            status_choices=None,
-            rank_choices=None,
-            first_name='test_first_name',
-            middle_name='test_middle_name',
-            last_name='test_last_name',
-            status='test_status',
-            rank='test_rank',
-        )
-        assert money_help
-        assert money_help.__str__()

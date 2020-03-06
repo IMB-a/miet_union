@@ -7,7 +7,6 @@ from miet_union.models import (
     EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
-    MoneyHelp,
     News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
@@ -46,18 +45,6 @@ class EmailSubscriptionAdmin(admin.ModelAdmin):
                     'created',
                     )
     list_filter = ('is_confirmed', 'created')
-
-
-class MoneyHelpAdmin(SummernoteModelAdmin):
-    class Meta:
-        model = News
-    list_display = ('last_name',
-                    'first_name',
-                    'middle_name',
-                    'rank',
-                    'status')
-    list_filter = ('rank', 'status')
-    list_per_page = 50
 
 
 class NewsAdmin(SummernoteModelAdmin):
@@ -144,7 +131,6 @@ admin.site.register(CommissionsOfProfcom, CommissionsOfProfcomAdmin)
 admin.site.register(HelpForProforg, HelpForProforgAdmin)
 admin.site.register(HelpForStudentProforg, HelpForStudentProforgAdmin)
 admin.site.register(NormativeDocuments, NormativeDocumentsAdmin)
-admin.site.register(MoneyHelp, MoneyHelpAdmin)
 admin.site.register(News, NewsAdmin)
 admin.site.register(ProtectionOfPersonalInformation,
                     ProtectionOfPersonalInformationAdmin)
