@@ -16,6 +16,7 @@ from .forms import (
     EmailingForm,
     EmailingUnsubscribeForm,
     SearchNewsForm,
+    StudentFinancialAssistanceForm,
     UserLoginForm,
     UserRegistrationForm,
 )
@@ -56,29 +57,34 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        if EmailSubscription.objects.filter(email=email):
-            if EmailSubscription.objects.get(email=email).is_confirmed is True:
-                messages.error(request, 'Вы уже подписаны')
+        if email:
+            if EmailSubscription.objects.filter(email=email):
+                if EmailSubscription.objects.get(email=email
+                                                 ).is_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
+                else:
+                    messages.info(request, '''Вы уже отправляли заявку,
+                                            выслана новая.''')
+                    send_mail_to_subscribe_confirm(email)
             else:
-                messages.info(request, '''Вы уже отправляли заявку,
-                                          выслана новая.''')
-                send_mail_to_subscribe_confirm(email)
-        else:
-            new_email = EmailSubscription.objects.create(email=email)
-            new_email.save()
-            send_mail_to_subscribe_confirm(new_email.email)
+                new_email = EmailSubscription.objects.create(email=email)
+                new_email.save()
+                send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
     search_news_form = SearchNewsForm(request.POST or None)
     if search_news_form.is_valid():
         res_news_context = {}
         str_input = request.POST.get('str_input')
-        title_res, main_text_res = News.search_news(str_input)
-        res_news_context.update({'title_res': title_res,
-                                 'main_text_res': main_text_res,
-                                 'search_news_form': search_news_form,
-                                 'email_form': email_form})
-        return render(request, 'miet_union/search_news.html', res_news_context)
+        if str_input:
+            title_res, main_text_res = News.search_news(str_input)
+            res_news_context.update({'title_res': title_res,
+                                     'main_text_res': main_text_res,
+                                     'search_news_form': search_news_form,
+                                     'email_form': email_form})
+            return render(request,
+                          'miet_union/search_news.html',
+                          res_news_context)
     context.update({'search_news_form': search_news_form})
 
     return render(request, 'miet_union/home.html', context)
@@ -111,7 +117,6 @@ def registration(request):
                                         is_staff=False,
                                         is_admin=False)
         user.save()
-        print('1')
         # login after registration
         user = authenticate(email=email.strip(),
                             password=password.strip())
@@ -255,6 +260,31 @@ def prof_com(request):
 
 def prof_souz(request):
     return render(request, 'miet_union/prof_souz.html')
+
+
+def financial_assistance(request, rank):
+    context = {}
+    form = StudentFinancialAssistanceForm(request.GET or None)
+    if form.is_valid():
+        first_name = request.GET.get('first_name')
+        last_name = request.GET.get('last_name')
+        middle_name = request.GET.get('middle_name')
+        if User.objects.filter(first_name=first_name,
+                               last_name=last_name,
+                               middle_name=middle_name,
+                               rank=rank):
+            res = User.objects.get(first_name=first_name,
+                                   last_name=last_name,
+                                   middle_name=middle_name,
+                                   rank=rank).financial_assistance_status
+            context.update({'res': res,
+                            'rank': rank})
+        else:
+            context.update({'rank': rank})
+    context.update({'form': form})
+    return render(request,
+                  'miet_union/financial_assistance.html',
+                  context)
 
 
 def test_404(request):

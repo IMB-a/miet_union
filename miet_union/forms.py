@@ -29,6 +29,18 @@ class EmailingUnsubscribeForm(forms.Form):
                                        'placeholder': 'Электронная почта'}))
 
 
+class StudentFinancialAssistanceForm(forms.Form):
+    first_name = forms.CharField(
+        label='Имя',
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(
+        label='Фамилия',
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    middle_name = forms.CharField(
+        label='Отчество',
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
 class SearchNewsForm(forms.Form):
     str_input = forms.CharField(
         label='',
