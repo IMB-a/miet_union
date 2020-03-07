@@ -34,6 +34,13 @@
               <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
             </ul>
           </li>
+          <li class="drop-down"><a>Мат. помощь<i class="ion-chevron-down"></i></a>
+            <ul class="drop-down-menu drop-down-inner">
+              <li><a href="/financial_assistance/student">Студенту</a></li>
+              <li><a href="/financial_assistance/graduate_student">Аспиранту</a></li>
+              <li><a href="/financial_assistance/worker">Работнику</a></li>
+            </ul>
+          </li>
           <li class="drop-down"><a>Документы<i class="ion-chevron-down"></i></a>
             <ul class="drop-down-menu drop-down-inner">
               <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
@@ -51,8 +58,8 @@
           </li>
           {% if user.is_authenticated %}
           <li class="drop-down" style="float: right;"><a>
-              {% if user.first_name %}
-              {{ user.first_name }}
+              {% if user %}
+              {{ user.get_short_name }}
               {% else %}
               Имя не указано
               {% endif %}
@@ -89,14 +96,22 @@
   <footer class="color-white bg-primary pt-50 font-11" style="font-weight: 500">
     <div class="container">
       <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-8">
+        <div class="col-lg-2 col-md-6 col-sm-8">
           <h5 class="f-title"><b>Студенту</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
             <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-4 col-md-5 col-sm-6">
+        <div class="col-lg-2 col-md-6 col-sm-8">
+          <h5 class="f-title"><b>Мат. помощь</b></h5>
+          <ul class="mb-30 list-hover list-block list-a-ptb-5">
+            <li><a href="/financial_assistance/student">Студенту</a></li>
+            <li><a href="/financial_assistance/graduate_student">Аспиранту</a></li>
+            <li><a href="/financial_assistance/worker">Работнику</a></li>
+          </ul>
+        </div><!-- col-sm-4 -->
+        <div class="col-lg-3 col-md-6 col-sm-6">
           <h5 class="f-title"><b>Документы</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
@@ -105,7 +120,7 @@
             <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
           </ul>
         </div><!-- col-sm-4 -->
-        <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="col-lg-2 col-md-6 col-sm-6">
           <h5 class="f-title"><b>О нас</b></h5>
           <ul class="mb-30 list-hover list-block list-a-ptb-5">
             <li><a href="{% url 'prof_com' %}">О профкоме</a></li>

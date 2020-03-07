@@ -4,9 +4,7 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,20 +16,22 @@ from .forms import (
     EmailingForm,
     EmailingUnsubscribeForm,
     SearchNewsForm,
+    StudentFinancialAssistanceForm,
     UserLoginForm,
+    UserRegistrationForm,
 )
 from .models import (
     CommissionsOfProfcom,
     EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
-    MoneyHelp,
     News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
     Worker,
+    User,
 )
 
 logger = logging.getLogger(__name__)
@@ -57,29 +57,34 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        if EmailSubscription.objects.filter(email=email):
-            if EmailSubscription.objects.get(email=email).is_confirmed is True:
-                messages.error(request, 'Вы уже подписаны')
+        if email:
+            if EmailSubscription.objects.filter(email=email):
+                if EmailSubscription.objects.get(email=email
+                                                 ).is_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
+                else:
+                    messages.info(request, '''Вы уже отправляли заявку,
+                                            выслана новая.''')
+                    send_mail_to_subscribe_confirm(email)
             else:
-                messages.info(request, '''Вы уже отправляли заявку,
-                                          выслана новая.''')
-                send_mail_to_subscribe_confirm(email)
-        else:
-            new_email = EmailSubscription.objects.create(email=email)
-            new_email.save()
-            send_mail_to_subscribe_confirm(new_email.email)
+                new_email = EmailSubscription.objects.create(email=email)
+                new_email.save()
+                send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
     search_news_form = SearchNewsForm(request.POST or None)
     if search_news_form.is_valid():
         res_news_context = {}
         str_input = request.POST.get('str_input')
-        title_res, main_text_res = News.search_news(str_input)
-        res_news_context.update({'title_res': title_res,
-                                 'main_text_res': main_text_res,
-                                 'search_news_form': search_news_form,
-                                 'email_form': email_form})
-        return render(request, 'miet_union/search_news.html', res_news_context)
+        if str_input:
+            title_res, main_text_res = News.search_news(str_input)
+            res_news_context.update({'title_res': title_res,
+                                     'main_text_res': main_text_res,
+                                     'search_news_form': search_news_form,
+                                     'email_form': email_form})
+            return render(request,
+                          'miet_union/search_news.html',
+                          res_news_context)
     context.update({'search_news_form': search_news_form})
 
     return render(request, 'miet_union/home.html', context)
@@ -94,17 +99,27 @@ def our_team(request):
 
 
 def registration(request):
-    form = UserCreationForm(data=request.POST or None)
-    next_ = request.GET.get('next')
-    if request.method == 'POST' and form.is_valid():
-        next_post = request.POST.get('next')
-        redirect_path = next_ or next_post or '/'   # noqa
-        form.save()
+    form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        middle_name = request.POST.get('middle_name')
+        rank = request.POST.get('rank')
+        user = User.objects.create_user(email=email,
+                                        first_name=first_name,
+                                        middle_name=middle_name,
+                                        last_name=last_name,
+                                        password=password,
+                                        is_active=True,
+                                        rank=rank,
+                                        is_staff=False,
+                                        is_admin=False)
+        user.save()
         # login after registration
-        username = request.POST.get('username')
-        password1 = request.POST.get('password1')
-        user = authenticate(username=username.strip(),
-                            password=password1.strip())
+        user = authenticate(email=email.strip(),
+                            password=password.strip())
         login(request, user)
 
         return redirect('/my_account')
@@ -116,9 +131,9 @@ def login_view(request):
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
     if form.is_valid():
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=username.strip(),
+        user = authenticate(email=email.strip(),
                             password=password.strip())
         if user:
             login(request, user)
@@ -133,16 +148,9 @@ def login_view(request):
 @login_required
 def my_account(request):
     context = {}
-    # TODO refactor this code ---
-    if MoneyHelp.objects.filter(first_name=request.user.first_name,
-                                last_name=request.user.last_name):
-        money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
-                                           last_name=request.user.last_name)
-        context.update({'money_help': money_help})
-    # TODO ---
     change_password_form = ChangePasswordForm(request.POST or None)
     context.update({'change_password_form': change_password_form})
-    user = User.objects.get(username=request.user)
+    user = User.objects.get(email=request.user.email)
     current_password_from_requst = request.user.password
     if change_password_form.is_valid():
         current_password_from_form = request.POST.get(
@@ -252,6 +260,31 @@ def prof_com(request):
 
 def prof_souz(request):
     return render(request, 'miet_union/prof_souz.html')
+
+
+def financial_assistance(request, rank):
+    context = {}
+    form = StudentFinancialAssistanceForm(request.GET or None)
+    if form.is_valid():
+        first_name = request.GET.get('first_name')
+        last_name = request.GET.get('last_name')
+        middle_name = request.GET.get('middle_name')
+        if User.objects.filter(first_name=first_name,
+                               last_name=last_name,
+                               middle_name=middle_name,
+                               rank=rank):
+            res = User.objects.get(first_name=first_name,
+                                   last_name=last_name,
+                                   middle_name=middle_name,
+                                   rank=rank).financial_assistance_status
+            context.update({'res': res,
+                            'rank': rank})
+        else:
+            context.update({'rank': rank})
+    context.update({'form': form})
+    return render(request,
+                  'miet_union/financial_assistance.html',
+                  context)
 
 
 def test_404(request):

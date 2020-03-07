@@ -21,9 +21,9 @@
           {% endif %}
           <form action="" method="post"> {% csrf_token %}
             <div class="fieldWrapper" style="margin-top: 7px">
-              {{ form.username.errors }}
-              <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
-              {{ form.username }}
+              {{ form.email.errors }}
+              <label for="{{ form.username.id_for_label }}">Email:</label>
+              {{ form.email }}
             </div>
             <div class="fieldWrapper" style="margin-top: 7px">
               {{ form.password.errors }}

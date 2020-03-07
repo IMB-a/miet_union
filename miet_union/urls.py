@@ -7,6 +7,7 @@ from django.views.generic import RedirectView
 
 from .views import (
     commissions,
+    financial_assistance,
     help_prof_org,
     home,
     login_view,
@@ -22,8 +23,8 @@ from .views import (
     social_card,
     subscribe_confirm,
     test_404,
-    useful_links,
     unsubscribe_emailing_in_url,
+    useful_links,
 )
 
 urlpatterns = [
@@ -33,6 +34,8 @@ urlpatterns = [
     path('commissions', commissions, name='commissions'),
     path('favicon.ico', RedirectView.as_view(
         url='/static/images/favicon.ico')),
+    path('financial_assistance/<slug:rank>', financial_assistance,
+         name='student_financial_assistance'),
     path('help_prof_org', help_prof_org, name='help_prof_org'),
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),

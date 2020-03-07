@@ -3,16 +3,163 @@ import os
 import random
 import string
 
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.hashers import make_password, identify_hasher
 from django.core.mail import send_mail
 from django.db import models
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from miet_union.decorators import disable_for_loaddata
 from miet_union import settings
 
 _ascii = string.ascii_uppercase + string.ascii_lowercase + string.digits
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, email, first_name=None, middle_name=None,
+                    last_name=None, password=None, is_active=None,
+                    rank=None, is_staff=None, is_admin=None):
+        """
+        Create and save a user with the given email, and password.
+        """
+        if not email:
+            raise ValueError('Пользователь должен иметь электронную почту')
+        if not password:
+            raise ValueError('Пользователь должен иметь пароль')
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                          first_name=first_name,
+                          middle_name=middle_name,
+                          last_name=last_name)
+        user.set_password(password)
+        user.admin = is_admin
+        user.rank = rank
+        user.staff = is_staff
+        user.active = is_active
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password):
+        user = self.create_user(email=email, password=password,
+                                is_staff=True, is_admin=True)
+        return user
+
+    def create_staffuser(self, email, password):
+        user = self.create_user(email, password=password,
+                                is_staff=True, is_admin=False)
+        return user
+
+
+class User(AbstractBaseUser):
+    """
+
+    """
+    status_choices = [
+        ('no_info', 'Нет информации'),
+        ('in_progress', 'На рассмотрении'),
+        ('approved', 'Одобрена'),
+        ('rejected', 'Отклонена')
+    ]
+    rank_choices = [
+        ('student', 'Студент'),
+        ('graduate_student', 'Аспирант'),
+        ('worker', 'Сотрудник')
+    ]
+    email = models.EmailField(_('email address'), unique=True)
+    last_name = models.CharField(
+        _('last name'), max_length=255, blank=True, null=True)
+    first_name = models.CharField(
+        _('first name'), max_length=255, blank=True, null=True)
+    middle_name = models.CharField(
+        verbose_name='Отчество', max_length=255, blank=True, null=True)
+    rank = models.CharField(
+        max_length=250,
+        default='student',
+        choices=rank_choices,
+        verbose_name='Кем является'
+    )
+    financial_assistance_status = models.CharField(
+        max_length=250,
+        default='no_info',
+        choices=status_choices,
+        verbose_name='Статус по оформлению материальной помощи'
+    )
+    secret_key = models.CharField(
+        max_length=30,
+        verbose_name='Секретный ключ',
+        help_text='''Случайно сгерерованный ключ при сознании сущности
+        длинной в 30 символов.''',
+        default=''.join(
+            random.choice(_ascii) for _ in range(30))
+    )
+    is_account_confirmed = models.BooleanField(
+        verbose_name='Аккаунт продтвержден',
+        default=False
+    )
+    is_email_subscription_confirmed = models.BooleanField(
+        verbose_name='Подписка на рассылку подтверждена',
+        default=False
+    )
+    staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    admin = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+        ordering = ['-last_name']
+
+    def __str__(self):
+        return self.email
+
+    def get_short_name(self):
+        """Return the short name for the user."""
+        if self.first_name and self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        return self.email
+
+    def get_full_name(self):
+        """
+        Return the first_name, middle_name and last_name, with a space
+        in between.
+        """
+        if self.first_name and self.last_name:
+            return f'''{self.first_name}
+            {self.middle_name} {self.last_name}'''.strip()
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        if self.admin:
+            return True
+        return self.staff
+
+    @property
+    def is_admin(self):
+        return self.admin
+
+    def save(self, *args, **kwargs):
+        try:
+            identify_hasher(self.password)
+        except ValueError:
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
 
 class CommissionsOfProfcom(models.Model):
@@ -187,9 +334,12 @@ class UsefulLinks(models.Model):
 
 
 class Worker(models.Model):
-    first_name = models.CharField(max_length=100, verbose_name='Имя')
-    last_name = models.CharField(max_length=100, verbose_name='Фамилия')
-    middle_name = models.CharField(max_length=100, verbose_name='Отчество')
+    first_name = models.CharField(
+        max_length=100, verbose_name='Имя', null=True)
+    last_name = models.CharField(
+        max_length=100, verbose_name='Фамилия', null=True)
+    middle_name = models.CharField(
+        max_length=100, verbose_name='Отчество', null=True)
     position = models.CharField(max_length=100, verbose_name="Должность")
     phone_num = models.CharField(max_length=11, verbose_name='Номер телефона')
     email = models.EmailField(max_length=254, verbose_name='Электронная почта')
@@ -203,44 +353,6 @@ class Worker(models.Model):
     class Meta:
         verbose_name = 'Работник'
         verbose_name_plural = 'Работники'
-        ordering = ['last_name']
-
-
-class MoneyHelp(models.Model):
-    status_choices = [
-        ('no_info', 'Нет информации'),
-        ('in_progress', 'На рассмотрении'),
-        ('approved', 'Одобрена'),
-        ('rejected', 'Отклонена')
-    ]
-    rank_choices = [
-        ('student', 'Студент'),
-        ('graduate_student', 'Аспирант'),
-        ('worker', 'Сотрудник')
-    ]
-    first_name = models.CharField(max_length=250, verbose_name='Имя')
-    middle_name = models.CharField(max_length=250, verbose_name='Отчество')
-    last_name = models.CharField(max_length=250, verbose_name='Фамилия')
-    status = models.CharField(
-        max_length=250,
-        default='no_info',
-        choices=status_choices,
-        verbose_name='Статус'
-    )
-    rank = models.CharField(
-        max_length=250,
-        default='no_info',
-        choices=rank_choices,
-        verbose_name='Студент, Аспирант или Сотрудник'
-    )
-
-    def __str__(self):
-        """Return MoneyHelp first_name"""
-        return self.first_name
-
-    class Meta:
-        verbose_name = 'Материальная помощь'
-        verbose_name_plural = 'Материальная помощь'
         ordering = ['last_name']
 
 
