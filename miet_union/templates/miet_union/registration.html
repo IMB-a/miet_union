@@ -10,6 +10,29 @@
           <h1 class="" style="text-align: center;">Регистрация</h1>
           <form action="" method="post"> {% csrf_token %}
             {{form.as_p}}
+            {% if messages %}
+            <div class="container my-2" style="padding: 0px; font-weight: 500;">
+              <div class="row">
+                <div class="col-md-12 mx-auto">
+                  {% for message in messages %}
+                  {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                  <div class="alert alert-danger messages">
+                    <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                      Внимание! {{ message }}<br />
+                      </span>
+                  </div>
+                  {% else %}
+                  <div class="alert alert-success messages">
+                    <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                      {{ message }}<br />
+                      </span>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
             <div class='btn-block'>
               <br><input type="submit" value="Зарегистрироваться" class="btn-fill-primary font-11">
             </div>

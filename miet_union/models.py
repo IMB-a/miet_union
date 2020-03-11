@@ -35,10 +35,10 @@ class UserManager(BaseUserManager):
         user = self.model(email=email,
                           first_name=first_name,
                           middle_name=middle_name,
-                          last_name=last_name)
+                          last_name=last_name,
+                          rank=rank)
         user.set_password(password)
         user.admin = is_admin
-        user.rank = rank
         user.staff = is_staff
         user.active = is_active
         user.save(using=self._db)
@@ -46,12 +46,12 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password):
         user = self.create_user(email=email, password=password,
-                                is_staff=True, is_admin=True)
+                                is_staff=True, is_admin=True, rank='worker')
         return user
 
     def create_staffuser(self, email, password):
-        user = self.create_user(email, password=password,
-                                is_staff=True, is_admin=False)
+        user = self.create_user(email=email, password=password,
+                                is_staff=True, is_admin=False, rank='worker')
         return user
 
 
@@ -202,6 +202,34 @@ class EmailSubscription(models.Model):
         """Return EmailSubscription email"""
         return self.email
 
+    @staticmethod
+    def send_email(instance, all_emails):
+        """
+        Send email to all user emails in db
+        """
+        context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS,
+                   'instance': instance}
+        all_email_addr = []
+        for addr in all_emails:
+            if addr.is_confirmed is True:
+                all_email_addr.append(addr.email)
+                try:
+                    email_instance = EmailSubscription.objects.get(
+                        email=addr.email)
+                    context.update({'secret_key': email_instance.secret_key})
+                    send_mail(
+                        subject='''Новоя новость на сайте
+                        профкома института МИЭТ''',
+                        message='Hello from django.',
+                        html_message=render_to_string(
+                            'miet_union/mail_template.html', context),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=all_email_addr,
+                        fail_silently=False,
+                    )
+                except NameError:
+                    logger.error('EMAIL_HOST_USER not found in send_email() ')
+
     class Meta:
         verbose_name = 'Почтовый адрес на рассылку'
         verbose_name_plural = 'Почтовые адреса на рассылку'
@@ -232,7 +260,7 @@ class News(models.Model):
         main_text_res = News.objects.none()
         if News.objects.filter(title__contains=str_input):
             title_res = News.objects.filter(title__contains=str_input)
-        if News.objects.filter(main_text__contains=str_input):
+        elif News.objects.filter(main_text__contains=str_input):
             main_text_res = News.objects.filter(main_text__contains=str_input)
         return title_res, main_text_res
 
@@ -417,35 +445,9 @@ def send_emails_when_news_pre_save(instance, *args, **kwargs):
     Send email to all user emails in db when
     new news is created
     """
+    from miet_union.models import EmailSubscription
     all_emails = EmailSubscription.objects.all()
-    send_email(instance, all_emails)
+    EmailSubscription.send_email(instance, all_emails)
 
 
 logger = logging.getLogger(__name__)
-
-
-def send_email(instance, all_emails):
-    """
-    Send email to all user emails in db
-    """
-    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS,
-               'instance': instance}
-    all_email_addr = []
-    for addr in all_emails:
-        if addr.is_confirmed is True:
-            all_email_addr.append(addr.email)
-            try:
-                email_instance = EmailSubscription.objects.get(
-                    email=addr.email)
-                context.update({'secret_key': email_instance.secret_key})
-                send_mail(
-                    subject='Новоя новость на сайте профкома института МИЭТ',
-                    message='Hello from django.',
-                    html_message=render_to_string(
-                        'miet_union/mail_template.html', context),
-                    from_email=settings.EMAIL_HOST_USER,
-                    recipient_list=all_email_addr,
-                    fail_silently=False,
-                )
-            except NameError:
-                logger.error('EMAIL_HOST_USER not found in send_email() ')

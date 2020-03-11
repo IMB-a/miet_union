@@ -107,22 +107,25 @@ def registration(request):
         last_name = request.POST.get('last_name')
         middle_name = request.POST.get('middle_name')
         rank = request.POST.get('rank')
-        user = User.objects.create_user(email=email,
-                                        first_name=first_name,
-                                        middle_name=middle_name,
-                                        last_name=last_name,
-                                        password=password,
-                                        is_active=True,
-                                        rank=rank,
-                                        is_staff=False,
-                                        is_admin=False)
-        user.save()
-        # login after registration
-        user = authenticate(email=email.strip(),
-                            password=password.strip())
-        login(request, user)
-
-        return redirect('/my_account')
+        user = User.objects.none()
+        if not User.objects.get(email=email):
+            user = User.objects.create_user(email=email,
+                                            first_name=first_name,
+                                            middle_name=middle_name,
+                                            last_name=last_name,
+                                            password=password,
+                                            is_active=True,
+                                            rank=rank,
+                                            is_staff=False,
+                                            is_admin=False)
+            user.save()
+            # login after registration
+            user = authenticate(email=email.strip(),
+                                password=password.strip())
+            login(request, user)
+            return redirect('/my_account')
+        else:
+            messages.error(request, 'Этот email уже занят')
 
     return render(request, "miet_union/registration.html", {'form': form})
 
