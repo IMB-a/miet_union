@@ -12,10 +12,9 @@
         {% for news in all_news %}
         {% if forloop.first and not all_news.has_previous %}
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h4 class="p-title"><b>Последняя новость</b></h4>
-          <h4><a href="{% url 'news_page' pk=news.pk %}"
-              style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
-              {{ news.title|truncatechars:100 }}</a></h4>
+          <h4 class="p-title"><a href="{% url 'news_page' pk=news.pk %}"
+              style="font-size: 1.15em; padding-bottom: 10px;">
+              <b>{{ news.title|truncatechars:100 }}</b></a></h4>
           <img src="/media/{{ news.image }}" alt="">
           <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
             <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
