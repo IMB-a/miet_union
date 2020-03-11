@@ -13,10 +13,13 @@
   {% block styles %}
   <link href="{% static 'plugin-frameworks/bootstrap.css' %}" rel="stylesheet">
   <link href="{% static 'common/styles.css' %}" rel="stylesheet">
+  <link href="{% static 'toastr/toastr.min.css' %}" rel="stylesheet">
+  <link href="{% static 'sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}" rel="stylesheet">
   <link href="{% static 'fonts/ionicons.css' %}" rel="stylesheet">
   {% endblock %}
   <title>{% block title%}Новостной портал профкома института МИЭТ{% endblock%}</title>
 </head>
+
 <body>
   <header>
     <div class="bottom-menu">
@@ -93,6 +96,23 @@
   </header>
   {% block content%}
   {% endblock%}
+  {% if messages %}
+  <div class="container my-2" style="padding: 0px; font-weight: 500;">
+    <div class="row">
+      <div class="col-md-12 mx-auto">
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="toastrDefaultError" title="{{ message }}">
+        </div>
+        {% else %}
+        <div class="toastrDefaultSuccess" title="{{ message }}">
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
   <footer class="color-white bg-primary pt-50 font-11" style="font-weight: 500">
     <div class="container">
       <div class="row">
@@ -159,8 +179,40 @@
   </footer>
   <!-- SCIPTS -->
   <script src="{% static 'plugin-frameworks/jquery-3.2.1.min.js' %}"></script>
+  <script src="{% static 'toastr/toastr.min.js' %}"></script>
+  <script src="{% static 'sweetalert2/sweetalert2.min.js' %}"></script>
   <script src="{% static 'plugin-frameworks/tether.min.js' %}"></script>
   <script src="{% static 'plugin-frameworks/bootstrap.js' %}"></script>
   <script src="{% static 'common/scripts.js' %}"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+      $('.toastrDefaultSuccess').show(function () {
+        var html = $('.toastrDefaultSuccess').attr("title");
+        toastr.success(html)
+      });
+      $('.toastrDefaultInfo').show(function () {
+        var html = $('.toastrDefaultInfo').attr("title");
+        toastr.info(html)
+      });
+      $('.toastrDefaultError').show(function () {
+        var html = $('.toastrDefaultError').attr("title");
+        toastr.error(html)
+      });
+      $('.toastrDefaultWarning').show(function () {
+        var html = $('.toastrDefaultWarning').attr("title");
+        toastr.warning(html)
+      });
+    });
+  </script>
+
 </body>
+
 </html>
