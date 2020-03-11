@@ -186,29 +186,23 @@
   <script src="{% static 'common/scripts.js' %}"></script>
 
   <script type="text/javascript">
+  // message is title in toastr div
     $(function () {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-      });
-
       $('.toastrDefaultSuccess').show(function () {
-        var html = $('.toastrDefaultSuccess').attr("title");
-        toastr.success(html)
+        var message = $('.toastrDefaultSuccess').attr("title");
+        toastr.success(message)
       });
       $('.toastrDefaultInfo').show(function () {
-        var html = $('.toastrDefaultInfo').attr("title");
-        toastr.info(html)
+        var message = $('.toastrDefaultInfo').attr("title");
+        toastr.info(message)
       });
       $('.toastrDefaultError').show(function () {
-        var html = $('.toastrDefaultError').attr("title");
-        toastr.error(html)
+        var message = $('.toastrDefaultError').attr("title");
+        toastr.error(message)
       });
       $('.toastrDefaultWarning').show(function () {
-        var html = $('.toastrDefaultWarning').attr("title");
-        toastr.warning(html)
+        var message = $('.toastrDefaultWarning').attr("title");
+        toastr.warning(message)
       });
     });
   </script>
