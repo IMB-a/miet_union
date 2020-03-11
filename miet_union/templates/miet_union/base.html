@@ -26,8 +26,8 @@
       <div class="container">
         <a class="menu-nav-icon pull-right" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
         <ul class="main-menu" id="main-menu">
-          <li style="margin-right: 30px"><a href="{% url 'home' %}"><img src="{% static 'images/emblema_white_min.png'%}"
-                style="width: 60px;"></a>
+          <li style="margin-right: 30px"><a href="{% url 'home' %}"><img
+                src="{% static 'images/emblema_white_min.png'%}" style="width: 60px;"></a>
           </li>
           <li><a href="{% url 'home' %}">Главная<i class=""></i></a>
           </li>
@@ -94,25 +94,23 @@
       </div><!-- container -->
     </div><!-- bottom-menu -->
   </header>
-  {% block content%}
-  {% endblock%}
   {% if messages %}
-  <div class="container my-2" style="padding: 0px; font-weight: 500;">
-    <div class="row">
-      <div class="col-md-12 mx-auto">
-        {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-        <div class="toastrDefaultError" title="{{ message }}">
-        </div>
-        {% else %}
-        <div class="toastrDefaultSuccess" title="{{ message }}">
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
+  <div class="container">
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="toastrDefaultError" title="{{ message }}">
     </div>
+    {% else %}
+    <div class="toastrDefaultSuccess" title="{{ message }}">
+    </div>
+    {% endif %}
+    {% endfor %}
   </div>
   {% endif %}
+
+  {% block content%}
+  {% endblock%}
+
   <footer class="color-white bg-primary pt-50 font-11" style="font-weight: 500">
     <div class="container">
       <div class="row">
@@ -186,7 +184,7 @@
   <script src="{% static 'common/scripts.js' %}"></script>
 
   <script type="text/javascript">
-  // message is title in toastr div
+    // message is title in toastr div
     $(function () {
       $('.toastrDefaultSuccess').show(function () {
         var message = $('.toastrDefaultSuccess').attr("title");
