@@ -21,7 +21,7 @@ class CustomIndexDashBoard(Dashboard):
         )
         self.children.append(
             modules.ModelList(
-                title=('Пользователи'),
+                title=('Все зарегистрированные пользователи сайта'),
                 models=('miet_union.models.User',),
             )
         )
@@ -29,12 +29,6 @@ class CustomIndexDashBoard(Dashboard):
             modules.ModelList(
                 title=('Работники Профкома'),
                 models=('miet_union.models.Worker',),
-            )
-        )
-        self.children.append(
-            modules.ModelList(
-                title=('Работники Профкома'),
-                models=('miet_union.models.HelpForProforg',),
             )
         )
         self.children.append(modules.Group(
