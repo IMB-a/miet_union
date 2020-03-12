@@ -1,0 +1,54 @@
+{% extends "miet_union/base.html" %}
+{% block title %} Тестовая страница {% endblock %}
+{% block content %}
+<section class="">
+  <div class="container">
+    <div class="row mx-auto">
+      {% if rank %}
+      <div class='col-md-6'>
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h1 class="" style="text-align: center;">Поиск</h1>
+          <form>
+            {{ form }}
+            <br><input type="submit" value="Найти" class="btn-fill-primary font-11">
+          </form>
+        </div>
+        </div>
+        <div class='col-md-6'>
+          <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+            <h4 class="p-title"><b>Результат</b></h4>
+            {% if res == 'no_info' %}
+            {% if rank == 'student' %}
+            <h5>Нет инфомации по студенту</h5>
+            {% elif rank == 'graduate_student' %}
+            <h5>Нет инфомации по аспиранту</h5>
+            {% elif rank == 'worker' %}
+            <h5>Нет инфомации по работнику</h5>
+            {% endif %}
+            {% elif res == 'in_progress' %}
+            <h5>В процессе</h5>
+            {% elif res == 'approved' %}
+            <h5>Одобрена</h5>
+            {% elif res == 'rejected' %}
+            <h5>Отклонена</h5>
+            {% endif %}
+            {% if not res %}
+            <h5>Человек не найден</h5>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+      <div class='col-md-6 offset-md-3 '>
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h1 class="" style="text-align: center;">Поиск</h1>
+          <form>
+            {{ form }}
+            <br><input type="submit" value="Найти" class="btn-fill-primary font-11">
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

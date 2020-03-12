@@ -4,9 +4,7 @@ from django.conf.urls import handler400, handler403, handler404, handler500  # n
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,20 +16,22 @@ from .forms import (
     EmailingForm,
     EmailingUnsubscribeForm,
     SearchNewsForm,
+    StudentFinancialAssistanceForm,
     UserLoginForm,
+    UserRegistrationForm,
 )
 from .models import (
     CommissionsOfProfcom,
     EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
-    MoneyHelp,
     News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
     Worker,
+    User,
 )
 
 logger = logging.getLogger(__name__)
@@ -57,29 +57,38 @@ def home(request):
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
-        if EmailSubscription.objects.filter(email=email):
-            if EmailSubscription.objects.get(email=email).is_confirmed is True:
-                messages.error(request, 'Вы уже подписаны')
+        if email:
+            if EmailSubscription.objects.filter(email=email):
+                if EmailSubscription.objects.get(email=email
+                                                 ).is_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
+                else:
+                    messages.info(request, '''Вы уже отправляли заявку,
+                                            выслана новая.''')
+                    send_mail_to_subscribe_confirm(email)
+            elif User.objects.filter(email=email):
+                if User.objects.get(
+                        email=email).is_email_subscription_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
             else:
-                messages.info(request, '''Вы уже отправляли заявку,
-                                          выслана новая.''')
-                send_mail_to_subscribe_confirm(email)
-        else:
-            new_email = EmailSubscription.objects.create(email=email)
-            new_email.save()
-            send_mail_to_subscribe_confirm(new_email.email)
+                new_email = EmailSubscription.objects.create(email=email)
+                new_email.save()
+                send_mail_to_subscribe_confirm(new_email.email)
     context.update({'email_form': email_form})
 
     search_news_form = SearchNewsForm(request.POST or None)
     if search_news_form.is_valid():
         res_news_context = {}
         str_input = request.POST.get('str_input')
-        title_res, main_text_res = News.search_news(str_input)
-        res_news_context.update({'title_res': title_res,
-                                 'main_text_res': main_text_res,
-                                 'search_news_form': search_news_form,
-                                 'email_form': email_form})
-        return render(request, 'miet_union/search_news.html', res_news_context)
+        if str_input:
+            title_res, main_text_res = News.search_news(str_input)
+            res_news_context.update({'title_res': title_res,
+                                     'main_text_res': main_text_res,
+                                     'search_news_form': search_news_form,
+                                     'email_form': email_form})
+            return render(request,
+                          'miet_union/search_news.html',
+                          res_news_context)
     context.update({'search_news_form': search_news_form})
 
     return render(request, 'miet_union/home.html', context)
@@ -94,20 +103,33 @@ def our_team(request):
 
 
 def registration(request):
-    form = UserCreationForm(data=request.POST or None)
-    next_ = request.GET.get('next')
-    if request.method == 'POST' and form.is_valid():
-        next_post = request.POST.get('next')
-        redirect_path = next_ or next_post or '/'   # noqa
-        form.save()
-        # login after registration
-        username = request.POST.get('username')
-        password1 = request.POST.get('password1')
-        user = authenticate(username=username.strip(),
-                            password=password1.strip())
-        login(request, user)
-
-        return redirect('/my_account')
+    form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        middle_name = request.POST.get('middle_name')
+        rank = request.POST.get('rank')
+        user = User.objects.none()
+        if not User.objects.get(email=email):
+            user = User.objects.create_user(email=email,
+                                            first_name=first_name,
+                                            middle_name=middle_name,
+                                            last_name=last_name,
+                                            password=password,
+                                            is_active=True,
+                                            rank=rank,
+                                            is_staff=False,
+                                            is_admin=False)
+            user.save()
+            # login after registration
+            user = authenticate(email=email.strip(),
+                                password=password.strip())
+            login(request, user)
+            return redirect('/my_account')
+        else:
+            messages.error(request, 'Этот email уже занят')
 
     return render(request, "miet_union/registration.html", {'form': form})
 
@@ -116,9 +138,9 @@ def login_view(request):
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
     if form.is_valid():
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=username.strip(),
+        user = authenticate(email=email.strip(),
                             password=password.strip())
         if user:
             login(request, user)
@@ -133,16 +155,9 @@ def login_view(request):
 @login_required
 def my_account(request):
     context = {}
-    # TODO refactor this code ---
-    if MoneyHelp.objects.filter(first_name=request.user.first_name,
-                                last_name=request.user.last_name):
-        money_help = MoneyHelp.objects.get(first_name=request.user.first_name,
-                                           last_name=request.user.last_name)
-        context.update({'money_help': money_help})
-    # TODO ---
     change_password_form = ChangePasswordForm(request.POST or None)
     context.update({'change_password_form': change_password_form})
-    user = User.objects.get(username=request.user)
+    user = User.objects.get(email=request.user.email)
     current_password_from_requst = request.user.password
     if change_password_form.is_valid():
         current_password_from_form = request.POST.get(
@@ -161,41 +176,23 @@ def my_account(request):
         else:
             messages.error(request, 'Неправельный пароль')
 
-    email = None
-    if EmailSubscription.objects.filter(email=request.user.email):
-        email = EmailSubscription.objects.get(email=request.user.email)
+    email_form = EmailingForm(request.POST or None)
+    user = User.objects.get(email=request.user.email)
+    email_unsubscribe_form = EmailingUnsubscribeForm(
+        request.POST or None)
 
-    if not email:
-        email_form = EmailingForm(request.POST or None)
-        if email_form.is_valid():
-            # then subscribe form and send subscribe_confirm message
-            new_email = EmailSubscription.objects.create(
-                email=request.user.email)
-            new_email.save()
-            send_mail_to_subscribe_confirm(new_email.email)
-            messages.info(request, '''Заявка отправлена''')
-        context.update({'email_form': email_form})
-        return render(request, 'miet_union/my_account.html', context)
-
-    elif email and email.is_confirmed is False:
-        # then subscribe form and resend subscribe_confirm message
-        email_form = EmailingForm(request.POST or None)
-        if email_form.is_valid():
-            send_mail_to_subscribe_confirm(request.user.email)
-            messages.info(request, '''Вы уже отправляли заявку,
-                                    выслана новая.''')
-        context.update({'email_form': email_form})
-        return render(request, 'miet_union/my_account.html', context)
-
-    elif email and email.is_confirmed is True:
-        # then unsubscribe form
-        email_unsubscribe_form = EmailingUnsubscribeForm(
-            request.POST or None)
-        if email_unsubscribe_form.is_valid():
-            unsubscribe_emailing(email.secret_key)
-            messages.success(request, 'Вы успешно отписались')
+    if user.is_email_subscription_confirmed:
         context.update({'email_unsubscribe_form': email_unsubscribe_form})
-        return render(request, 'miet_union/my_account.html', context)
+        if email_unsubscribe_form.is_valid():
+            unsubscribe_emailing(user.secret_key, is_registred_user=True)
+            messages.success(request, 'Вы успешно отписались')
+            return redirect('/my_account')
+    else:
+        context.update({'email_form': email_form})
+        if email_form.is_valid():
+            send_mail_to_subscribe_confirm(user.email, is_registred_user=True)
+            messages.info(request, 'Заявка отправлена.')
+            return redirect('/my_account')
 
     return render(request, 'miet_union/my_account.html', context)
 
@@ -206,8 +203,44 @@ def logout_view(request):
 
 
 def news_page(request, pk):
+    context = {}
     news = get_object_or_404(News, pk=pk)
-    return render(request, 'miet_union/news_page.html', {'news': news})
+    context.update({'news': news})
+    email_form = EmailingForm(request.POST or None)
+    if email_form.is_valid():
+        email = request.POST.get('email')
+        if email:
+            if EmailSubscription.objects.filter(email=email):
+                if EmailSubscription.objects.get(email=email
+                                                 ).is_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
+                else:
+                    messages.info(request, '''Вы уже отправляли заявку,
+                                            выслана новая.''')
+                    send_mail_to_subscribe_confirm(email)
+            else:
+                new_email = EmailSubscription.objects.create(email=email)
+                new_email.save()
+                send_mail_to_subscribe_confirm(new_email.email,
+                                               is_registred_user=False)
+    context.update({'email_form': email_form})
+
+    search_news_form = SearchNewsForm(request.POST or None)
+    if search_news_form.is_valid():
+        res_news_context = {}
+        str_input = request.POST.get('str_input')
+        if str_input:
+            title_res, main_text_res = News.search_news(str_input)
+            res_news_context.update({'title_res': title_res,
+                                     'main_text_res': main_text_res,
+                                     'search_news_form': search_news_form,
+                                     'email_form': email_form})
+            return render(request,
+                          'miet_union/search_news.html',
+                          res_news_context)
+    context.update({'search_news_form': search_news_form})
+
+    return render(request, 'miet_union/news_page.html', context)
 
 
 def error_400(request, exception):
@@ -254,6 +287,30 @@ def prof_souz(request):
     return render(request, 'miet_union/prof_souz.html')
 
 
+def financial_assistance(request, rank):
+    context = {}
+    form = StudentFinancialAssistanceForm(request.GET or None)
+    if form.is_valid():
+        first_name = request.GET.get('first_name')
+        last_name = request.GET.get('last_name')
+        middle_name = request.GET.get('middle_name')
+        if User.objects.filter(first_name=first_name,
+                               last_name=last_name,
+                               middle_name=middle_name,
+                               rank=rank):
+            res = User.objects.get(first_name=first_name,
+                                   last_name=last_name,
+                                   middle_name=middle_name,
+                                   rank=rank).financial_assistance_status
+            context.update({'res': res, 'rank': rank})
+        else:
+            context.update({'rank': rank})
+    context.update({'form': form})
+    return render(request,
+                  'miet_union/financial_assistance.html',
+                  context)
+
+
 def test_404(request):
     return render(request, 'miet_union/404.html')
 
@@ -290,40 +347,59 @@ def useful_links(request):
     return render(request, 'miet_union/useful_links.html', context)
 
 
+def unsubscribe_emailing(secret_key, is_registred_user):
+    """
+    Set is_email_subscription_confirmed to False
+    and delete EmailSubscription instance from db
+    """
+    if is_registred_user:
+        User.objects.filter(secret_key=secret_key).update(
+            is_email_subscription_confirmed=False)
+        user = User.objects.get(secret_key=secret_key)
+        # also for unregistered users with same email
+        if EmailSubscription.objects.filter(email=user.email):
+            EmailSubscription.objects.filter(email=user.email).delete()
+        return redirect('home')
+    else:
+        EmailSubscription.objects.filter(secret_key=secret_key).delete()
+
+
 def unsubscribe_emailing_in_url(request, secret_key):
     """
     Delete EmailSubscription instance from db
     """
-    unsubscribe_emailing(secret_key)
+    if User.objects.filter(secret_key=secret_key):
+        unsubscribe_emailing(secret_key, is_registred_user=True)
+    else:
+        unsubscribe_emailing(secret_key, is_registred_user=False)
     messages.success(request, 'Вы успешно отписались')
-    return render(request, 'miet_union/home.html')
-
-
-def unsubscribe_emailing(secret_key):
-    """
-    Delete EmailSubscription instance from db
-    """
-    EmailSubscription.objects.filter(secret_key=secret_key).delete()
 
 
 def subscribe_confirm(request, secret_key):
     """
     Confirm Subscription: EmailSubscription.is_confirmed = True
     """
+    if User.objects.filter(secret_key=secret_key):
+        user = User.objects.filter(secret_key=secret_key)
+        user.update(is_email_subscription_confirmed=True)
     EmailSubscription.objects.filter(
         secret_key=secret_key).update(is_confirmed=True)
     messages.success(request, 'Вы успешно подписались')
-    return redirect('/')
+    return redirect('home')
 
 
-def send_mail_to_subscribe_confirm(email):
+def send_mail_to_subscribe_confirm(email, is_registred_user):
     """
     Send emails to accounts with
     EmailSubscription.is_confirmed is True
     """
     context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
-    email_instance = EmailSubscription.objects.get(email=email)
-    context.update({'secret_key': email_instance.secret_key})
+    if is_registred_user:
+        user = User.objects.get(email=email)
+        context.update({'secret_key': user.secret_key})
+    else:
+        email_instance = EmailSubscription.objects.get(email=email)
+        context.update({'secret_key': email_instance.secret_key})
     try:
         send_mail(
             subject='Подтверждение подписки',
