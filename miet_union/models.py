@@ -16,6 +16,7 @@ from miet_union.decorators import disable_for_loaddata
 from miet_union import settings
 
 _ascii = string.ascii_uppercase + string.ascii_lowercase + string.digits
+logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager):
@@ -203,36 +204,56 @@ class EmailSubscription(models.Model):
         return self.email
 
     @staticmethod
-    def send_email(instance, all_emails):
+    def send_email(instance, all_instance_emails, all_users):
         """
         Send email to all user emails in db
         """
         context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS,
                    'instance': instance}
-        all_email_addr = []
-        for addr in all_emails:
-            if addr.is_confirmed is True:
-                all_email_addr.append(addr.email)
+        for user in all_users:
+            if user.is_email_subscription_confirmed is True:
                 try:
-                    email_instance = EmailSubscription.objects.get(
-                        email=addr.email)
-                    context.update({'secret_key': email_instance.secret_key})
+                    context.update({'secret_key': user.secret_key})
                     send_mail(
-                        subject='''Новоя новость на сайте
-                        профкома института МИЭТ''',
-                        message='Hello from django.',
+                        subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
+                        message='',
                         html_message=render_to_string(
                             'miet_union/mail_template.html', context),
                         from_email=settings.EMAIL_HOST_USER,
-                        recipient_list=all_email_addr,
+                        recipient_list=[user.email],
                         fail_silently=False,
                     )
                 except NameError:
                     logger.error('EMAIL_HOST_USER not found in send_email() ')
+                except AttributeError:
+                    logger.error("""module 'miet_union.settings'
+                    has no attribute 'EMAIL_HOST_USER'""")
+        for email_instance in all_instance_emails:
+            if email_instance.is_confirmed is True:
+                if not User.objects.filter(email=email_instance.email):
+                    try:
+                        context.update(
+                            {'secret_key': email_instance.secret_key})
+                        send_mail(
+                            subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
+                            message='',
+                            html_message=render_to_string(
+                                'miet_union/mail_template.html', context),
+                            from_email=settings.EMAIL_HOST_USER,
+                            recipient_list=[email_instance.email],
+                            fail_silently=False,
+                        )
+                    except NameError:
+                        logger.error(
+                            'EMAIL_HOST_USER not found in send_email()')
+                    except AttributeError:
+                        logger.error("""module 'miet_union.settings'
+                        has no attribute 'EMAIL_HOST_USER'""")
 
     class Meta:
         verbose_name = 'Почтовый адрес на рассылку'
-        verbose_name_plural = 'Почтовые адреса на рассылку'
+        verbose_name_plural = '''Непривязанные к аккаунтам
+                                 почтовые адреса для рассылки'''
         ordering = ['-created']
 
 
@@ -446,8 +467,8 @@ def send_emails_when_news_pre_save(instance, *args, **kwargs):
     new news is created
     """
     from miet_union.models import EmailSubscription
-    all_emails = EmailSubscription.objects.all()
-    EmailSubscription.send_email(instance, all_emails)
-
-
-logger = logging.getLogger(__name__)
+    all_instance_emails = EmailSubscription.objects.all()
+    all_users = User.objects.all()
+    EmailSubscription.send_email(instance,
+                                 all_instance_emails,
+                                 all_users)

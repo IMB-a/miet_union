@@ -66,6 +66,10 @@ def home(request):
                     messages.info(request, '''Вы уже отправляли заявку,
                                             выслана новая.''')
                     send_mail_to_subscribe_confirm(email)
+            elif User.objects.filter(email=email):
+                if User.objects.get(
+                        email=email).is_email_subscription_confirmed is True:
+                    messages.error(request, 'Вы уже подписаны')
             else:
                 new_email = EmailSubscription.objects.create(email=email)
                 new_email.save()
@@ -172,41 +176,23 @@ def my_account(request):
         else:
             messages.error(request, 'Неправельный пароль')
 
-    email = None
-    if EmailSubscription.objects.filter(email=request.user.email):
-        email = EmailSubscription.objects.get(email=request.user.email)
+    email_form = EmailingForm(request.POST or None)
+    user = User.objects.get(email=request.user.email)
+    email_unsubscribe_form = EmailingUnsubscribeForm(
+        request.POST or None)
 
-    if not email:
-        email_form = EmailingForm(request.POST or None)
-        if email_form.is_valid():
-            # then subscribe form and send subscribe_confirm message
-            new_email = EmailSubscription.objects.create(
-                email=request.user.email)
-            new_email.save()
-            send_mail_to_subscribe_confirm(new_email.email)
-            messages.info(request, '''Заявка отправлена''')
-        context.update({'email_form': email_form})
-        return render(request, 'miet_union/my_account.html', context)
-
-    elif email and email.is_confirmed is False:
-        # then subscribe form and resend subscribe_confirm message
-        email_form = EmailingForm(request.POST or None)
-        if email_form.is_valid():
-            send_mail_to_subscribe_confirm(request.user.email)
-            messages.info(request, '''Вы уже отправляли заявку,
-                                    выслана новая.''')
-        context.update({'email_form': email_form})
-        return render(request, 'miet_union/my_account.html', context)
-
-    elif email and email.is_confirmed is True:
-        # then unsubscribe form
-        email_unsubscribe_form = EmailingUnsubscribeForm(
-            request.POST or None)
-        if email_unsubscribe_form.is_valid():
-            unsubscribe_emailing(email.secret_key)
-            messages.success(request, 'Вы успешно отписались')
+    if user.is_email_subscription_confirmed:
         context.update({'email_unsubscribe_form': email_unsubscribe_form})
-        return render(request, 'miet_union/my_account.html', context)
+        if email_unsubscribe_form.is_valid():
+            unsubscribe_emailing(user.secret_key, is_registred_user=True)
+            messages.success(request, 'Вы успешно отписались')
+            return redirect('/my_account')
+    else:
+        context.update({'email_form': email_form})
+        if email_form.is_valid():
+            send_mail_to_subscribe_confirm(user.email, is_registred_user=True)
+            messages.info(request, 'Заявка отправлена.')
+            return redirect('/my_account')
 
     return render(request, 'miet_union/my_account.html', context)
 
@@ -235,7 +221,8 @@ def news_page(request, pk):
             else:
                 new_email = EmailSubscription.objects.create(email=email)
                 new_email.save()
-                send_mail_to_subscribe_confirm(new_email.email)
+                send_mail_to_subscribe_confirm(new_email.email,
+                                               is_registred_user=False)
     context.update({'email_form': email_form})
 
     search_news_form = SearchNewsForm(request.POST or None)
@@ -315,8 +302,7 @@ def financial_assistance(request, rank):
                                    last_name=last_name,
                                    middle_name=middle_name,
                                    rank=rank).financial_assistance_status
-            context.update({'res': res,
-                            'rank': rank})
+            context.update({'res': res, 'rank': rank})
         else:
             context.update({'rank': rank})
     context.update({'form': form})
@@ -361,40 +347,59 @@ def useful_links(request):
     return render(request, 'miet_union/useful_links.html', context)
 
 
+def unsubscribe_emailing(secret_key, is_registred_user):
+    """
+    Set is_email_subscription_confirmed to False
+    and delete EmailSubscription instance from db
+    """
+    if is_registred_user:
+        User.objects.filter(secret_key=secret_key).update(
+            is_email_subscription_confirmed=False)
+        user = User.objects.get(secret_key=secret_key)
+        # also for unregistered users with same email
+        if EmailSubscription.objects.filter(email=user.email):
+            EmailSubscription.objects.filter(email=user.email).delete()
+        return redirect('home')
+    else:
+        EmailSubscription.objects.filter(secret_key=secret_key).delete()
+
+
 def unsubscribe_emailing_in_url(request, secret_key):
     """
     Delete EmailSubscription instance from db
     """
-    unsubscribe_emailing(secret_key)
+    if User.objects.filter(secret_key=secret_key):
+        unsubscribe_emailing(secret_key, is_registred_user=True)
+    else:
+        unsubscribe_emailing(secret_key, is_registred_user=False)
     messages.success(request, 'Вы успешно отписались')
-    return render(request, 'miet_union/home.html')
-
-
-def unsubscribe_emailing(secret_key):
-    """
-    Delete EmailSubscription instance from db
-    """
-    EmailSubscription.objects.filter(secret_key=secret_key).delete()
 
 
 def subscribe_confirm(request, secret_key):
     """
     Confirm Subscription: EmailSubscription.is_confirmed = True
     """
+    if User.objects.filter(secret_key=secret_key):
+        user = User.objects.filter(secret_key=secret_key)
+        user.update(is_email_subscription_confirmed=True)
     EmailSubscription.objects.filter(
         secret_key=secret_key).update(is_confirmed=True)
     messages.success(request, 'Вы успешно подписались')
-    return redirect('/')
+    return redirect('home')
 
 
-def send_mail_to_subscribe_confirm(email):
+def send_mail_to_subscribe_confirm(email, is_registred_user):
     """
     Send emails to accounts with
     EmailSubscription.is_confirmed is True
     """
     context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
-    email_instance = EmailSubscription.objects.get(email=email)
-    context.update({'secret_key': email_instance.secret_key})
+    if is_registred_user:
+        user = User.objects.get(email=email)
+        context.update({'secret_key': user.secret_key})
+    else:
+        email_instance = EmailSubscription.objects.get(email=email)
+        context.update({'secret_key': email_instance.secret_key})
     try:
         send_mail(
             subject='Подтверждение подписки',

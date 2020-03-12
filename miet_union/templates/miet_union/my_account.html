@@ -58,7 +58,6 @@
           <h4 class="p-title"><b>Уведомления о свежих новостях</b></h4>
           {% if email_form %}
           <form action="" method="post"> {% csrf_token %}
-            {{ email_form.label }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Подписаться
@@ -67,7 +66,6 @@
           {% endif %}
           {% if email_unsubscribe_form %}
           <form action="" method="post"> {% csrf_token %}
-            {{ email_unsubscribe_form.label }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Отписаться
