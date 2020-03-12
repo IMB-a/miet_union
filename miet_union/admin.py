@@ -2,18 +2,17 @@ from admin_tools.dashboard import Dashboard
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 
-
 from miet_union.models import (
     CommissionsOfProfcom,
     EmailSubscription,
     HelpForProforg,
     HelpForStudentProforg,
-    MoneyHelp,
     News,
     NormativeDocuments,
     ProtectionOfPersonalInformation,
     TheMainActivitiesOfProforg,
     UsefulLinks,
+    User,
     Worker,
 )
 
@@ -26,6 +25,18 @@ class CustomDashboard(Dashboard):
         Dashboard.__init__(**kwargs)
 
 
+class UserAdmin(admin.ModelAdmin):
+    class Meta:
+        model = User
+    list_display = ('email',
+                    'first_name',
+                    'middle_name',
+                    'last_name',)
+    list_filter = ('date_joined',
+                   'is_account_confirmed',
+                   'is_email_subscription_confirmed')
+
+
 class EmailSubscriptionAdmin(admin.ModelAdmin):
     class Meta:
         model = Worker
@@ -34,18 +45,6 @@ class EmailSubscriptionAdmin(admin.ModelAdmin):
                     'created',
                     )
     list_filter = ('is_confirmed', 'created')
-
-
-class MoneyHelpAdmin(SummernoteModelAdmin):
-    class Meta:
-        model = News
-    list_display = ('last_name',
-                    'first_name',
-                    'middle_name',
-                    'rank',
-                    'status')
-    list_filter = ('rank', 'status')
-    list_per_page = 50
 
 
 class NewsAdmin(SummernoteModelAdmin):
@@ -126,12 +125,12 @@ admin.site.index_title = ('Профком')
 admin.site.site_title = ('Административная консоль')
 
 
+admin.site.register(User, UserAdmin)
 admin.site.register(EmailSubscription, EmailSubscriptionAdmin)
 admin.site.register(CommissionsOfProfcom, CommissionsOfProfcomAdmin)
 admin.site.register(HelpForProforg, HelpForProforgAdmin)
 admin.site.register(HelpForStudentProforg, HelpForStudentProforgAdmin)
 admin.site.register(NormativeDocuments, NormativeDocumentsAdmin)
-admin.site.register(MoneyHelp, MoneyHelpAdmin)
 admin.site.register(News, NewsAdmin)
 admin.site.register(ProtectionOfPersonalInformation,
                     ProtectionOfPersonalInformationAdmin)

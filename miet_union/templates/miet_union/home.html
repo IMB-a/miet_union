@@ -4,7 +4,7 @@
 <!-- START OF MAIN SLIDER -->
 {% block content %}
 
-<section class="">
+<section>
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-lg-8">
@@ -12,10 +12,9 @@
         {% for news in all_news %}
         {% if forloop.first and not all_news.has_previous %}
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h4 class="p-title"><b>Последняя новость</b></h4>
-          <h4><a href="{% url 'news_page' pk=news.pk %}"
-              style="font-weight: 500; font-size: 1.15em; padding-bottom: 10px;">
-              {{ news.title|truncatechars:100 }}</a></h4>
+          <h4 class="p-title"><a href="{% url 'news_page' pk=news.pk %}"
+              style="font-size: 1.15em; padding-bottom: 10px;">
+              <b>{{ news.title|truncatechars:100 }}</b></a></h4>
           <img src="/media/{{ news.image }}" alt="">
           <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
             <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
@@ -136,21 +135,20 @@
       <div class="col-md-12 col-lg-4">
         <div class="mb-30 mt-md-30 p-30 card-view">
           <h4 class="p-title"><b>Мы вконтакте</b></h4>
-          <ul>
-            <script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
-            <!-- VK Widget -->
-            <div id="vk_groups"></div>
-            <script type="text/javascript">
-              VK.Widgets.Group("vk_groups", {
-                mode: 3,
-                width: "auto",
-                no_cover: 0,
-              }, 20030105);
-            </script>
-          </ul>
+          <script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
+          <!-- VK Widget -->
+          <div id="vk_groups"></div>
+          <script type="text/javascript">
+            VK.Widgets.Group("vk_groups", {
+              mode: 3,
+              width: "auto",
+              no_cover: 0,
+              color3: '0F45C7',
+            }, 20030105);
+          </script>
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Поиск по новостям</h4>
+          <h4 class="p-title"><b>Поиск по новостям</b></h4>
           <form action="" method="post"> {% csrf_token %}
             {{ search_news_form.str_input }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
@@ -161,29 +159,6 @@
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
           <h4 class="p-title"><b>Уведомления</b></h4>
-          {% if messages %}
-          <div class="container my-2" style="padding: 0px; font-weight: 500;">
-            <div class="row">
-              <div class="col-md-12 mx-auto">
-                {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="alert alert-danger messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    Внимание! {{ message }}<br />
-                    </span>
-                </div>
-                {% else %}
-                <div class="alert alert-success messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {{ message }}<br />
-                    </span>
-                </div>
-                {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          {% endif %}
           <form action="" method="post"> {% csrf_token %}
             {{ email_form.email }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
@@ -191,21 +166,24 @@
               Подписаться
             </button>
           </form>
-
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view" style="font-weight: 500">
           <h4 class="p-title"><b>Наш офис</b></h4>
           <ul class="list-contact list-li-mb-20">
-            <li><a href="https://yandex.ru/maps/?ll=37.213456%2C55.982694&pt=~37.208335%2C55.983375&z=15.6"><i class="ion-ios-home" style="font-size: 1.7em;"></i>124498, Россия, Москва,
-              Зеленоград, Площадь
-              Шокина, дом 1. ауд (1206, 1206а)</a>
+            <li><a href="https://yandex.ru/maps/?ll=37.213456%2C55.982694&pt=~37.208335%2C55.983375&z=15.6"><i
+                  class="ion-ios-home" style="font-size: 1.7em;"></i>124498, Россия, Москва,
+                Зеленоград, Площадь
+                Шокина, дом 1. ауд (1206, 1206а)</a>
             </li>
-            <li><a href="tel:+74997101447"><i class="ion-ios-telephone" style="font-size: 1.7em;"></i>8 (499) 710-14-47</a>
+            <li><a href="tel:+74997101447"><i class="ion-ios-telephone" style="font-size: 1.7em;"></i>8 (499)
+                710-14-47</a>
             </li>
             <li>
               <ul>
-                <li><a href="mailto:profcom@miee.ru"><i class="ion-email" style="font-size: 1.7em;"></i>profcom@miee.ru</a></li>
-                <li><a href="mailto:profcom-miet@mail.ru"><i class="ion-email" style="font-size: 1.7em;"></i>profcom-miet@mail.ru</a>
+                <li><a href="mailto:profcom@miee.ru"><i class="ion-email"
+                      style="font-size: 1.7em;"></i>profcom@miee.ru</a></li>
+                <li><a href="mailto:profcom-miet@mail.ru"><i class="ion-email"
+                      style="font-size: 1.7em;"></i>profcom-miet@mail.ru</a>
                 </li>
               </ul>
             </li>

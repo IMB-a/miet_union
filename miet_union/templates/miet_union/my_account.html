@@ -8,7 +8,15 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view" style="min-height: 368px">
           <h4 class="p-title"><b>Личная информация</b></h4>
-          <h4><b>{{ user.first_name }} {{ user.last_name }}</b></h4>
+          <h4><b>{{ user.last_name }} {{ user.first_name }} {{user.middle_name}} -
+              {% if user.rank == 'student' %}
+              Студент
+              {% elif user.rank == 'graduate_student' %}
+              Аспирант
+              {% elif user.rank == 'worker' %}
+              Сотрудник
+              {% endif %}
+            </b></h4>
           <ul class="list-contact list-li-mb-20" style="margin-top: 5px">
             <li><i class="ion-email" style="font-size: 1.7em;"></i>{{ user.email }}</a></li>
           </ul>
@@ -17,29 +25,6 @@
       <div class="col-md-4 col-lg-4">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Смена пароля</b></h4>
-          <div class="container my-2" style="padding: 0px">
-            <div class="row">
-              <div class="col-md-12 mx-auto">
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="alert alert-danger messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    Внимание! {{ message }}<br />
-                    </span>
-                </div>
-                {% else %}
-                <div class="alert alert-success messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {{ message }}<br />
-                    </span>
-                </div>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-              </div>
-            </div>
-          </div>
           <form action="" method="post"> {% csrf_token %}
             {{change_password_form.current_password.label}}
             {{change_password_form.current_password}}
@@ -57,13 +42,13 @@
       <div class="col-md-8 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
-          {% if money_help.status == 'no_info' %}
+          {% if user.financial_assistance_status == 'no_info' %}
           <h5>Нет инфомации</h5>
-          {% elif money_help.status == 'in_progress' %}
+          {% elif user.financial_assistance_status == 'in_progress' %}
           <h5>В процессе</h5>
-          {% elif money_help.status == 'approved' %}
+          {% elif user.financial_assistance_status == 'approved' %}
           <h5>Одобрена</h5>
-          {% elif money_help.status == 'rejected' %}
+          {% elif user.financial_assistance_status == 'rejected' %}
           <h5>Отклонена</h5>
           {% endif %}
         </div>
@@ -71,50 +56,22 @@
       <div class="col-md-4 col-lg-4">
         <div class="mb-30 mt-md-30 p-30 card-view">
           <h4 class="p-title"><b>Уведомления о свежих новостях</b></h4>
-          {% if messages %}
-          <div class="container my-2" style="padding: 0px; font-weight: 500;">
-            <div class="row">
-              <div class="col-md-12 mx-auto">
-                {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="alert alert-danger messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    Внимание! {{ message }}<br />
-                    </span>
-                </div>
-                {% else %}
-                <div class="alert alert-success messages">
-                  <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {{ message }}<br />
-                    </span>
-                </div>
-                {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          {% endif %}
-
           {% if email_form %}
           <form action="" method="post"> {% csrf_token %}
-            {{ email_form.label }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Подписаться
             </button>
           </form>
           {% endif %}
-
           {% if email_unsubscribe_form %}
           <form action="" method="post"> {% csrf_token %}
-            {{ email_unsubscribe_form.label }}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
               style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
               Отписаться
             </button>
           </form>
           {% endif %}
-
         </div><!-- card-view -->
       </div>
     </div><!-- row -->

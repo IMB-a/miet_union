@@ -157,3 +157,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # admin_tools settings
 ADMIN_TOOLS_INDEX_DASHBOARD = 'miet_union.dashboard.CustomIndexDashBoard'
+
+AUTH_USER_MODEL = 'miet_union.User'

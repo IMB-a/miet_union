@@ -21,27 +21,15 @@ class CustomIndexDashBoard(Dashboard):
         )
         self.children.append(
             modules.ModelList(
+                title=('Все зарегистрированные пользователи сайта'),
+                models=('miet_union.models.User',),
+            )
+        )
+        self.children.append(
+            modules.ModelList(
                 title=('Работники Профкома'),
                 models=('miet_union.models.Worker',),
             )
-        )
-        self.children.append(
-            modules.ModelList(
-                title=('Работники Профкома'),
-                models=('miet_union.models.HelpForProforg',),
-            )
-        )
-        self.children.append(
-            modules.ModelList(
-                title=('Работники Профкома'),
-                models=('miet_union.models.MoneyHelp',),
-            )
-        )
-        self.children.append(
-            modules.ModelList(
-                title=('Пользователи и группы'),
-                models=('django.contrib.*',),
-            ),
         )
         self.children.append(modules.Group(
             title=("Документы"),

@@ -1,52 +1,61 @@
 {% extends "miet_union/base.html" %}
+{% load static %}
 {% block title %}Страница Входа{% endblock %}
 
 {% block content %}
 <section class="">
   <div class="container">
     <div class="row mx-auto">
-      <div class='col-md-6 offset-md-3'>
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h1 class="" style="text-align: center; margin-bottom: 7px;">Войти в систему</h1>
-          {% if messages %}
-          {% for message in messages %}
-          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-          <div class="alert alert-danger messages" style="margin-bottom: 7px;">
-            <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-              Внимание! {{ message }}<br />
-              </span>
+      <div class='col-lg-8 d-none d-sm-none d-md-none d-lg-block'>
+        <div class="col-md-12 col-lg-12 d-none d-sm-none d-md-block" style="padding: 0px;width: 100%; height: 100%;">
+          <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+            <h3 class="p-title"><b>Мы - профсоюзная организация института МИЭТ</b></h3>
+            <div class="text-center"><a href="{% url 'home' %}">
+            <img src="{% static 'images/emblema_original.png'%}" alt="" style="width: 90%; height: 90%;"></a>
           </div>
-          {% endif %}
-          {% endfor %}
-          {% endif %}
-          <form action="" method="post"> {% csrf_token %}
-            <div class="fieldWrapper" style="margin-top: 7px">
-              {{ form.username.errors }}
-              <label for="{{ form.username.id_for_label }}">Имя пользователя:</label>
-              {{ form.username }}
-            </div>
-            <div class="fieldWrapper" style="margin-top: 7px">
-              {{ form.password.errors }}
-              <label for="{{ form.password.id_for_label }}">Пароль:</label>
-              {{ form.password }}
-            </div>
-            <div class="container" style="padding: 0px">
-              <div class="row">
-                <div class='col-md-5'>
-                  <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
-                    style="margin-top: 7px; font-size: 1.1em; height: 45px; line-height: 45px; width: 100%">
-                    Войти
-                  </button>
-                </div>
-          </form>
-          <div class='col-md-7'>
-            <button onclick="location.href='/registration';"
-              class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
-              style="margin-top: 7px; font-size: 1.1em; height: 45px; line-height: 45px; width: 100%">Зарегистрироваться</button>
           </div>
         </div>
       </div>
+      <div class='col-md-12 col-lg-4'>
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <form action="" method="post"> {% csrf_token %}
+            <div style="margin-top: 0px">{{registration_form.email}}</div>
+            <div style="margin-top: 7px">{{registration_form.password}}</div>
+            <div class="container" style="padding: 0px">
+              <div class="row">
+                <div class='col-md-12'>
+                  <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+                    style="margin-top: 7px; font-size: 1.1em; height: calc(1.5em + 0.75rem + 2px); line-height: calc(1.5em + 0.75rem + 2px); width: 100%">
+                    Войти
+                  </button>
+                </div>
+              </div>
+          </form>
+          <div class="text-center">
+            <a href="{% url 'reset_password_page' %}" class="mt-15 btn-b-sm font-11" style="margin-top: 7px; font-size: 1.1em;">
+              Не помните пароль?
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+        <h3 class="p-title" style="text-align: center; margin-bottom: 15px;">Впервые у нас?</h3>
+        <form action="" method="post"> {% csrf_token %}
+          <div style="margin-top: 0px">{{registration_form.email}}</div>
+          <div style="margin-top: 7px">{{registration_form.password}}</div>
+          <div style="margin-top: 7px">{{registration_form.confirmed_password}}</div>
+          <div style="margin-top: 7px">{{registration_form.rank}}</div>
+          <div style="margin-top: 7px">{{registration_form.first_name}}</div>
+          <div style="margin-top: 7px">{{registration_form.last_name}}</div>
+          <div style="margin-top: 7px">{{registration_form.middle_name}}</div>
+          <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+            style="margin-top: 7px; font-size: 1.1em; height: calc(1.5em + 0.75rem + 2px); line-height: calc(1.5em + 0.75rem + 2px); width: 100%">
+            Зарегистрироваться
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
   </div>
 </section>
 {% endblock %}

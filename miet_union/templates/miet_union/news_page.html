@@ -8,7 +8,9 @@
     <div class="row">
       <div class="col-md-12 col-lg-8">
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-50 card-view">
-          <h3 class="p-title"><b>{{ news.title }}</b></h3>
+          <h4 class="p-title"><a href="{% url 'news_page' pk=news.pk %}"
+              style="font-size: 1.15em; padding-bottom: 10px;">
+              <b>{{ news.title }}</b></a></h4>
           <div class="container">
             <div class="row">
               <img src="/media/{{ news.image }}" alt="">
@@ -38,12 +40,23 @@
           </ul>
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">
+          <h4 class="p-title"><b>Поиск по новостям</b></h4>
+          <form action="" method="post"> {% csrf_token %}
+            {{ search_news_form.str_input }}
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Найти
+            </button>
+          </form>
+        </div><!-- card-view -->
+        <div class="mb-30 mt-md-30 p-30 card-view">
           <h4 class="p-title"><b>Уведомления</b></h4>
-          <p class="text-center" style="margin-bottom: 20px;">Подписаться на уведомления об новостях</p>
-          <form class="form-sm max-w-400x mlr-auto">
-            <input type="email" placeholder="Ваш Email">
-            <h6><button class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block" type="submit"
-                style="font-size: 1.1em;"><b>Подписаться</b></button></h6>
+          <form action="" method="post"> {% csrf_token %}
+            {{ email_form.email }}
+            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+              style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+              Подписаться
+            </button>
           </form>
         </div><!-- card-view -->
         <div class="mb-30 mt-md-30 p-30 card-view">

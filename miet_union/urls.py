@@ -7,6 +7,7 @@ from django.views.generic import RedirectView
 
 from .views import (
     commissions,
+    financial_assistance,
     help_prof_org,
     home,
     login_view,
@@ -18,12 +19,14 @@ from .views import (
     personal_data_protection,
     prof_com,
     prof_souz,
-    registration,
+    reset_password,
+    reset_password_page,
     social_card,
     subscribe_confirm,
     test_404,
-    useful_links,
     unsubscribe_emailing_in_url,
+    useful_links,
+    user_confirm,
 )
 
 urlpatterns = [
@@ -33,6 +36,8 @@ urlpatterns = [
     path('commissions', commissions, name='commissions'),
     path('favicon.ico', RedirectView.as_view(
         url='/static/images/favicon.ico')),
+    path('financial_assistance/<slug:rank>', financial_assistance,
+         name='student_financial_assistance'),
     path('help_prof_org', help_prof_org, name='help_prof_org'),
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
@@ -45,13 +50,16 @@ urlpatterns = [
          name='personal_data_protection'),
     path('prof_com', prof_com, name='prof_com'),
     path('prof_souz', prof_souz, name='prof_souz'),
-    path('registration', registration, name='registration'),
+    path('reset_password/<slug:secret_key>',
+         reset_password, name='reset_password'),
+    path('reset_password_page', reset_password_page, name='reset_password_page'),
     path('social_card', social_card, name='social_card'),
     path('subscribe/<slug:secret_key>', subscribe_confirm,
          name='subscribe_confirm'),
     path('summernote/', include('django_summernote.urls')),
-    path('test', test_404, name='test'),
+    path('test_404', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
+    path('user_confirm/<slug:secret_key>', user_confirm, name='user_confirm'),
     path('unsubscribe/<slug:secret_key>', unsubscribe_emailing_in_url,
          name='unsubscribe'),
 ]
