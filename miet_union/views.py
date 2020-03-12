@@ -108,15 +108,16 @@ def login_view(request):
     if form.is_valid():
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(email=email.strip(),
-                            password=password.strip())
-        if user:
-            login(request, user)
-            next_post = request.POST.get('next')
-            rederict_path = next_ or next_post or '/'
-            return redirect(rederict_path)
-        else:
-            messages.error(request, 'Неправельный логин или пароль')
+        if email and password:
+            user = authenticate(email=email.strip(),
+                                password=password.strip())
+            if user:
+                login(request, user)
+                next_post = request.POST.get('next')
+                rederict_path = next_ or next_post or '/'
+                return redirect(rederict_path)
+            else:
+                messages.error(request, 'Неправельный логин или пароль')
 
     registration_form = UserRegistrationForm(request.POST or None)
     if form.is_valid():
@@ -127,29 +128,31 @@ def login_view(request):
         middle_name = request.POST.get('middle_name')
         rank = request.POST.get('rank')
         user = User.objects.none()
-        if not User.objects.filter(email=email):
-            user = User.objects.create_user(email=email,
-                                            first_name=first_name,
-                                            middle_name=middle_name,
-                                            last_name=last_name,
-                                            password=password,
-                                            is_active=True,
-                                            rank=rank,
-                                            is_staff=False,
-                                            is_admin=False)
-            user.save()
-            send_mail_to_account_confirm(user.email)
-            # login after registration
-            user = authenticate(email=email.strip(),
-                                password=password.strip())
-            login(request, user)
-            messages.info(request, '''Пожалуйста,
-                подтвердите акканут на почте.
-                Иначе не сможите восстановить пароль.''')
-            return redirect('/my_account')
-        else:
-            messages.error(request, 'Этот email уже занят')
-            return redirect('/login')
+        if email and password and first_name and last_name and \
+                middle_name and rank:
+            if not User.objects.filter(email=email):
+                user = User.objects.create_user(email=email,
+                                                first_name=first_name,
+                                                middle_name=middle_name,
+                                                last_name=last_name,
+                                                password=password,
+                                                is_active=True,
+                                                rank=rank,
+                                                is_staff=False,
+                                                is_admin=False)
+                user.save()
+                send_mail_to_account_confirm(user.email)
+                # login after registration
+                user = authenticate(email=email.strip(),
+                                    password=password.strip())
+                login(request, user)
+                messages.info(request, '''Пожалуйста,
+                    подтвердите акканут на почте.
+                    Иначе не сможите восстановить пароль.''')
+                return redirect('/my_account')
+            else:
+                messages.error(request, 'Этот email уже занят')
+                return redirect('/login')
     return render(request,
                   'miet_union/login.html',
                   {'form': form,

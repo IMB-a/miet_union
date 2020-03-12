@@ -32,9 +32,9 @@
         </div>
         </form>
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h2 class="" style="text-align: center;">Впервые у нас?</h2>
+          <h3 class="p-title" style="text-align: center; margin-bottom: 15px;">Впервые у нас?</h3>
           <form action="" method="post"> {% csrf_token %}
-            <div style="margin-top: 15px">{{registration_form.email}}</div>
+            <div style="margin-top: 0px">{{registration_form.email}}</div>
             <div style="margin-top: 7px">{{registration_form.password}}</div>
             <div style="margin-top: 7px">{{registration_form.confirmed_password}}</div>
             <div style="margin-top: 7px">{{registration_form.rank}}</div>
