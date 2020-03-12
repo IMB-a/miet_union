@@ -19,12 +19,12 @@ from .views import (
     personal_data_protection,
     prof_com,
     prof_souz,
-    registration,
     social_card,
     subscribe_confirm,
     test_404,
     unsubscribe_emailing_in_url,
     useful_links,
+    user_confirm,
 )
 
 urlpatterns = [
@@ -48,13 +48,13 @@ urlpatterns = [
          name='personal_data_protection'),
     path('prof_com', prof_com, name='prof_com'),
     path('prof_souz', prof_souz, name='prof_souz'),
-    path('registration', registration, name='registration'),
     path('social_card', social_card, name='social_card'),
     path('subscribe/<slug:secret_key>', subscribe_confirm,
          name='subscribe_confirm'),
     path('summernote/', include('django_summernote.urls')),
-    path('test', test_404, name='test'),
+    path('test_404', test_404, name='test'),
     path('useful_links', useful_links, name='useful_links'),
+    path('user_confirm/<slug:secret_key>', user_confirm, name='user_confirm'),
     path('unsubscribe/<slug:secret_key>', unsubscribe_emailing_in_url,
          name='unsubscribe'),
 ]

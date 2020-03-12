@@ -102,38 +102,6 @@ def our_team(request):
     return render(request, 'miet_union/our_team.html', context)
 
 
-def registration(request):
-    form = UserRegistrationForm(request.POST or None)
-    if form.is_valid():
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        middle_name = request.POST.get('middle_name')
-        rank = request.POST.get('rank')
-        user = User.objects.none()
-        if not User.objects.get(email=email):
-            user = User.objects.create_user(email=email,
-                                            first_name=first_name,
-                                            middle_name=middle_name,
-                                            last_name=last_name,
-                                            password=password,
-                                            is_active=True,
-                                            rank=rank,
-                                            is_staff=False,
-                                            is_admin=False)
-            user.save()
-            # login after registration
-            user = authenticate(email=email.strip(),
-                                password=password.strip())
-            login(request, user)
-            return redirect('/my_account')
-        else:
-            messages.error(request, 'Этот email уже занят')
-
-    return render(request, "miet_union/registration.html", {'form': form})
-
-
 def login_view(request):
     form = UserLoginForm(request.POST or None)
     next_ = request.GET.get('next')
@@ -149,7 +117,43 @@ def login_view(request):
             return redirect(rederict_path)
         else:
             messages.error(request, 'Неправельный логин или пароль')
-    return render(request, 'miet_union/login.html', {'form': form})
+
+    registration_form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        middle_name = request.POST.get('middle_name')
+        rank = request.POST.get('rank')
+        user = User.objects.none()
+        if not User.objects.filter(email=email):
+            user = User.objects.create_user(email=email,
+                                            first_name=first_name,
+                                            middle_name=middle_name,
+                                            last_name=last_name,
+                                            password=password,
+                                            is_active=True,
+                                            rank=rank,
+                                            is_staff=False,
+                                            is_admin=False)
+            user.save()
+            send_mail_to_account_confirm(user.email)
+            # login after registration
+            user = authenticate(email=email.strip(),
+                                password=password.strip())
+            login(request, user)
+            messages.info(request, '''Пожалуйста,
+                подтвердите акканут на почте.
+                Иначе не сможите восстановить пароль.''')
+            return redirect('/my_account')
+        else:
+            messages.error(request, 'Этот email уже занят')
+            return redirect('/login')
+    return render(request,
+                  'miet_union/login.html',
+                  {'form': form,
+                   'registration_form': registration_form})
 
 
 @login_required
@@ -388,6 +392,16 @@ def subscribe_confirm(request, secret_key):
     return redirect('home')
 
 
+def user_confirm(request, secret_key):
+    """
+    Confirm Subscription: EmailSubscription.is_confirmed = True
+    """
+    User.objects.filter(secret_key=secret_key
+                        ).update(is_account_confirmed=True)
+    messages.success(request, 'Вы успешно подтвердили аккаунт')
+    return redirect('home')
+
+
 def send_mail_to_subscribe_confirm(email, is_registred_user):
     """
     Send emails to accounts with
@@ -407,6 +421,29 @@ def send_mail_to_subscribe_confirm(email, is_registred_user):
                     новостей от профкома МИЭТ""",
             html_message=render_to_string(
                 'miet_union/subscribe_confirm.html', context),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except NameError:
+        logger.error('''EMAIL_HOST_USER not found in
+            send_mail_to_subscribe_confirm''')
+
+
+def send_mail_to_account_confirm(email):
+    """
+    Send emails to accounts with
+    EmailSubscription.is_confirmed is True
+    """
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
+    user = User.objects.get(email=email)
+    context.update({'secret_key': user.secret_key})
+    try:
+        send_mail(
+            subject='Подтверждение email на сайте профкома МИЭТ',
+            message="Пожалуйста подтвердите email для активации аккаунта",
+            html_message=render_to_string(
+                'miet_union/user_confirm.html', context),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False,

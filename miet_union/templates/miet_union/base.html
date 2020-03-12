@@ -100,8 +100,11 @@
     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
     <div class="toastrDefaultError" title="{{ message }}">
     </div>
-    {% else %}
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
     <div class="toastrDefaultSuccess" title="{{ message }}">
+    </div>
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+    <div class="toastrDefaultInfo" title="{{ message }}">
     </div>
     {% endif %}
     {% endfor %}
