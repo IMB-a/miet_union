@@ -96,3 +96,15 @@ class UserRegistrationForm(forms.Form):
         label='',
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'placeholder': 'Ваше отчество'}))
+
+
+class PasswordResetForm(forms.Form):
+    password = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                          'placeholder': 'Новый пароль'}))
+    confirmed_password = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'Подтверждение нового пароля'}))

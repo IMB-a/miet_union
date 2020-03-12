@@ -15,6 +15,7 @@ from .forms import (
     ChangePasswordForm,
     EmailingForm,
     EmailingUnsubscribeForm,
+    PasswordResetForm,
     SearchNewsForm,
     StudentFinancialAssistanceForm,
     UserLoginForm,
@@ -405,6 +406,61 @@ def user_confirm(request, secret_key):
     return redirect('home')
 
 
+def reset_password(request, secret_key):
+    """
+    Set new password
+    """
+    context = {}
+    password_reset_form = PasswordResetForm(request.POST or None)
+    if password_reset_form.is_valid():
+        password = request.POST.get('password')
+        confirmed_password = request.POST.get('confirmed_password')
+        if password == confirmed_password:
+            if User.objects.filter(secret_key=secret_key):
+                user = User.objects.get(secret_key=secret_key)
+                user.set_password(password)
+                user.save()
+                messages.success(request, 'Пароль изменен')
+                redirect('home')
+        else:
+            messages.error(request, 'Пароли не совпадают')
+            redirect(f'/reset_password/{secret_key}')
+    context.update({'password_reset_form': password_reset_form})
+    return render(request, 'miet_union/reset_password_page.html', context)
+
+
+def reset_password_page(request):
+    """
+    Set new password
+    """
+    context = {}
+    email_form = EmailingForm(request.POST or None)
+    if email_form.is_valid():
+        email = request.POST.get('email')
+        if User.objects.filter(email=email):
+            secret_key = User.objects.get(email=email).secret_key
+            context.update({'secret_key': secret_key})
+            try:
+                send_mail(
+                    subject='Изменение пароля',
+                    message="",
+                    html_message=render_to_string(
+                        'miet_union/reset_password_email.html', context),
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+            except NameError:
+                logger.error('''EMAIL_HOST_USER not found in
+                    send_mail_to_subscribe_confirm''')
+
+            messages.success(request, f'''Выслано письмо на
+                    {email} для изменения пароля''')
+    context.update({'email_form': email_form})
+
+    return render(request, 'miet_union/reset_password_page.html', context)
+
+
 def send_mail_to_subscribe_confirm(email, is_registred_user):
     """
     Send emails to accounts with
@@ -447,6 +503,28 @@ def send_mail_to_account_confirm(email):
             message="Пожалуйста подтвердите email для активации аккаунта",
             html_message=render_to_string(
                 'miet_union/user_confirm.html', context),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except NameError:
+        logger.error('''EMAIL_HOST_USER not found in
+            send_mail_to_subscribe_confirm''')
+
+
+def send_reset_password_email(email):
+    """
+    Send emails to for password reset
+    """
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
+    user = User.objects.get(email=email)
+    context.update({'secret_key': user.secret_key})
+    try:
+        send_mail(
+            subject='Подтверждение email на сайте профкома МИЭТ',
+            message="Пожалуйста подтвердите email для активации аккаунта",
+            html_message=render_to_string(
+                'miet_union/reset_password.html', context),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False,

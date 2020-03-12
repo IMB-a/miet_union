@@ -8,11 +8,11 @@
     <div class="row mx-auto">
       <div class='col-lg-8 d-none d-sm-none d-md-none d-lg-block'>
         <div class="col-md-12 col-lg-12 d-none d-sm-none d-md-block" style="padding: 0px;">
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-        <h3 class="p-title"><b>Мы - профсоюзная организация института МИЭТ</b></h3>
-          <img src="{% static 'images/emblema_original.png'%}" alt="">
-      </div>
-      </div>
+          <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+            <h3 class="p-title"><b>Мы - профсоюзная организация института МИЭТ</b></h3>
+            <img src="{% static 'images/emblema_original.png'%}" alt="">
+          </div>
+        </div>
       </div>
       <div class='col-md-12 col-lg-4'>
         <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
@@ -28,27 +28,32 @@
                   </button>
                 </div>
               </div>
-            </div>
-        </div>
-        </form>
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h3 class="p-title" style="text-align: center; margin-bottom: 15px;">Впервые у нас?</h3>
-          <form action="" method="post"> {% csrf_token %}
-            <div style="margin-top: 0px">{{registration_form.email}}</div>
-            <div style="margin-top: 7px">{{registration_form.password}}</div>
-            <div style="margin-top: 7px">{{registration_form.confirmed_password}}</div>
-            <div style="margin-top: 7px">{{registration_form.rank}}</div>
-            <div style="margin-top: 7px">{{registration_form.first_name}}</div>
-            <div style="margin-top: 7px">{{registration_form.last_name}}</div>
-            <div style="margin-top: 7px">{{registration_form.middle_name}}</div>
-            <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
-              style="margin-top: 7px; font-size: 1.1em; height: calc(1.5em + 0.75rem + 2px); line-height: calc(1.5em + 0.75rem + 2px); width: 100%">
-              Зарегистрироваться
-            </button>
           </form>
+          <div class="text-center">
+            <a href="/reset_password_page" class="mt-15 btn-b-sm font-11" style="margin-top: 7px; font-size: 1.1em;">
+              Не помните пароль?
+            </a>
+          </div>
         </div>
       </div>
+      <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+        <h3 class="p-title" style="text-align: center; margin-bottom: 15px;">Впервые у нас?</h3>
+        <form action="" method="post"> {% csrf_token %}
+          <div style="margin-top: 0px">{{registration_form.email}}</div>
+          <div style="margin-top: 7px">{{registration_form.password}}</div>
+          <div style="margin-top: 7px">{{registration_form.confirmed_password}}</div>
+          <div style="margin-top: 7px">{{registration_form.rank}}</div>
+          <div style="margin-top: 7px">{{registration_form.first_name}}</div>
+          <div style="margin-top: 7px">{{registration_form.last_name}}</div>
+          <div style="margin-top: 7px">{{registration_form.middle_name}}</div>
+          <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+            style="margin-top: 7px; font-size: 1.1em; height: calc(1.5em + 0.75rem + 2px); line-height: calc(1.5em + 0.75rem + 2px); width: 100%">
+            Зарегистрироваться
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
   </div>
 </section>
 {% endblock %}
