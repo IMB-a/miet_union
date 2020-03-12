@@ -7,10 +7,12 @@
   <div class="container">
     <div class="row mx-auto">
       <div class='col-lg-8 d-none d-sm-none d-md-none d-lg-block'>
-        <div class="col-md-12 col-lg-12 d-none d-sm-none d-md-block" style="padding: 0px;">
+        <div class="col-md-12 col-lg-12 d-none d-sm-none d-md-block" style="padding: 0px;width: 100%; height: 100%;">
           <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
             <h3 class="p-title"><b>Мы - профсоюзная организация института МИЭТ</b></h3>
-            <img src="{% static 'images/emblema_original.png'%}" alt="">
+            <div class="text-center"><a href="{% url 'home' %}">
+            <img src="{% static 'images/emblema_original.png'%}" alt="" style="width: 90%; height: 90%;"></a>
+          </div>
           </div>
         </div>
       </div>
@@ -30,7 +32,7 @@
               </div>
           </form>
           <div class="text-center">
-            <a href="/reset_password_page" class="mt-15 btn-b-sm font-11" style="margin-top: 7px; font-size: 1.1em;">
+            <a href="{% url 'reset_password_page' %}" class="mt-15 btn-b-sm font-11" style="margin-top: 7px; font-size: 1.1em;">
               Не помните пароль?
             </a>
           </div>
