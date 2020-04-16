@@ -11,18 +11,18 @@
         {% if all_news %}
         {% for news in all_news %}
         {% if forloop.first and not all_news.has_previous %}
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+        <div class="mb-30 plr-30 pt-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><a href="{% url 'news_page' pk=news.pk %}"
               style="font-size: 1.15em; padding-bottom: 10px;">
               <b>{{ news.title|truncatechars:100 }}</b></a></h4>
           <img src="/media/{{ news.image }}" alt="">
-          <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right;">
+          <ul class="mtb-10 list-li-mr-0 color-lite-black" style="float: right;">
             <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
           </ul>
         </div><!-- card-view -->
         {% else %}
-        <div class="mb-30 card-view">
-          <div class="container">
+        <div class="mb-30 pr-30 card-view">
+          <div class="container" style="padding: 0px;">
             <div class="row">
               <!-- for non mobile -->
               <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
@@ -32,7 +32,7 @@
                 <h4><a href="{% url 'news_page' pk=news.pk %}"
                     style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
                     {{ news.title|truncatechars:100 }}</a></h4>
-                <ul class="mtb-10 list-li-mr-20 color-lite-black" style="float: right; position: sticky; top: 100%;">
+                <ul class="mtb-10 list-li-mr-0 color-lite-black" style="float: right; position: sticky; top: 100%;">
                   <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
                 </ul>
               </div><!-- /for non mobile -->
