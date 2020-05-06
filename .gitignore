@@ -138,6 +138,8 @@ fixtures/
 # Django migrations
 miet_union/migrations/*_initial.py
 miet_union/migrations/*_auto*.py
+documents/migrations/*_initial.py
+documents/migrations/*_auto*.py
 
 # Django MEDIA_ROOT
 /media/
