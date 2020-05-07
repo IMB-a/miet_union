@@ -6,7 +6,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-lg-8">
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view" style="min-height: 368px">
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
           <h4 class="p-title"><b>Личная информация</b></h4>
           <h4><b>{{ user.last_name }} {{ user.first_name }} {{user.middle_name}} -
               {% if user.rank == 'student' %}
@@ -20,6 +20,24 @@
           <ul class="list-contact list-li-mb-20" style="margin-top: 5px">
             <li><i class="ion-email" style="font-size: 1.7em;"></i>{{ user.email }}</a></li>
           </ul>
+          {% if user.is_superuser or user.is_staff %}
+          <h4 class="text-center"><b>Для Админитраторов</b></h4>
+          <ul class="list-contact ">
+            <li><a href="/admin"><i class="ion-android-laptop" style="font-size: 1.5em;"></i>Панель Админитстратора</a></li>
+          </ul>
+          {% endif %}
+        </div>
+        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
+          <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
+          {% if user.financial_assistance_status == 'no_info' %}
+          <h5>Нет инфомации</h5>
+          {% elif user.financial_assistance_status == 'in_progress' %}
+          <h5>В процессе</h5>
+          {% elif user.financial_assistance_status == 'approved' %}
+          <h5>Одобрена</h5>
+          {% elif user.financial_assistance_status == 'rejected' %}
+          <h5>Отклонена</h5>
+          {% endif %}
         </div>
       </div>
       <div class="col-md-4 col-lg-4">
@@ -38,24 +56,8 @@
             </button>
           </form>
         </div><!-- bg-white -->
-      </div><!-- col-sm-8 -->
-      <div class="col-md-8 col-lg-8">
-        <div class="mb-30 p-30 ptb-sm-25 plr-sm-15 card-view">
-          <h4 class="p-title"><b>Информация о материальной помощи</b></h4>
-          {% if user.financial_assistance_status == 'no_info' %}
-          <h5>Нет инфомации</h5>
-          {% elif user.financial_assistance_status == 'in_progress' %}
-          <h5>В процессе</h5>
-          {% elif user.financial_assistance_status == 'approved' %}
-          <h5>Одобрена</h5>
-          {% elif user.financial_assistance_status == 'rejected' %}
-          <h5>Отклонена</h5>
-          {% endif %}
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-4">
         <div class="mb-30 mt-md-30 p-30 card-view">
-          <h4 class="p-title"><b>Уведомления о свежих новостях</b></h4>
+          <h4 class="p-title"><b>Уведомления</b></h4>
           {% if email_form %}
           <form action="" method="post"> {% csrf_token %}
             <button type="submit" class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
@@ -73,8 +75,17 @@
           </form>
           {% endif %}
         </div><!-- card-view -->
+        <div class="mb-30 mt-md-30 p-30 card-view">
+          <h4 class="p-title"><b>Выход из учетной записи</b></h4>
+          <button type="submit" onclick="window.location.href='{% url 'logout' %}'"
+            class="mt-15 plr-20 btn-b-sm btn-fill-primary dplay-block font-11"
+            style="margin-top: 7px; font-size: 1.1em; height: 35px; line-height: 35px; width: 100%">
+            Выйти
+          </button>
+        </div><!-- card-view -->
       </div>
-    </div><!-- row -->
+    </div>
+  </div><!-- row -->
   </div><!-- container -->
 </section>
 {% endblock %}
