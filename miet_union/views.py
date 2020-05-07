@@ -75,6 +75,7 @@ def home(request):
             else:
                 new_email = EmailSubscription.objects.create(email=email)
                 new_email.save()
+                # send an e-mail to an unregistered user
                 send_mail_to_subscribe_confirm(
                     new_email.email, is_registerd_user=False)
                 messages.error(request, 'Заявка отправлена')
