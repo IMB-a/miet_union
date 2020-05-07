@@ -59,15 +59,25 @@ def home(request):
                 else:
                     messages.info(request, '''Вы уже отправляли заявку,
                                             выслана новая.''')
-                    send_mail_to_subscribe_confirm(email)
+                    # send an e-mail to an unregistered user
+                    send_mail_to_subscribe_confirm(
+                        email, is_registred_user=False)
             elif User.objects.filter(email=email):
                 if User.objects.get(
                         email=email).is_email_subscription_confirmed is True:
                     messages.error(request, 'Вы уже подписаны')
+                else:
+                    # send email to
+                    # User.is_email_subscription_confirmed = False
+                    send_mail_to_subscribe_confirm(
+                        email=email, is_registred_user=True)
+                    messages.info(request, '''Заявка отправлена''')
             else:
                 new_email = EmailSubscription.objects.create(email=email)
                 new_email.save()
-                send_mail_to_subscribe_confirm(new_email.email)
+                send_mail_to_subscribe_confirm(
+                    new_email.email, is_registerd_user=False)
+                messages.error(request, 'Заявка отправлена')
     context.update({'email_form': email_form})
 
     search_news_form = SearchNewsForm(request.POST or None)
@@ -218,7 +228,8 @@ def news_page(request, pk):
                 else:
                     messages.info(request, '''Вы уже отправляли заявку,
                                             выслана новая.''')
-                    send_mail_to_subscribe_confirm(email)
+                    send_mail_to_subscribe_confirm(
+                        email, is_registred_user=False)
             else:
                 new_email = EmailSubscription.objects.create(email=email)
                 new_email.save()
