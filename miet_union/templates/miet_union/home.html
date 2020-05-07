@@ -15,38 +15,46 @@
           <h4 class="p-title"><a href="{% url 'news_page' pk=news.pk %}"
               style="font-size: 1.15em; padding-bottom: 10px;">
               <b>{{ news.title|truncatechars:100 }}</b></a></h4>
-          <img src="/media/{{ news.image }}" alt="">
+          <a href="{% url 'news_page' pk=news.pk %}" style="width: 100%;"><img src="/media/{{ news.image }}" alt=""></a>
           <ul class="mtb-10 list-li-mr-0 color-lite-black" style="float: right;">
-            <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+            <li><i class="font-12 ion-clock mr-5"></i>{{ news.created }}</li>
           </ul>
         </div><!-- card-view -->
         {% else %}
-        <div class="mb-30 pr-30 card-view">
+        <div class="mb-30 pr-30 card-view d-none d-sm-none d-md-block">
           <div class="container">
             <div class="row">
               <!-- for non mobile -->
               <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
-                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+                <a href="{% url 'news_page' pk=news.pk %}" style="width: 100%;"><img src="/media/{{ news.image }}"
+                    style="width: 100%; height: auto;"></a>
               </div><!-- left-area -->
-              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block">
+              <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block"  style="padding-right: 0px; padding-left: 15px;">
                 <h4><a href="{% url 'news_page' pk=news.pk %}"
                     style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
                     {{ news.title|truncatechars:100 }}</a></h4>
                 <ul class="mtb-10 list-li-mr-0 color-lite-black" style="float: right; position: sticky; top: 100%;">
-                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                  <li><i class="font-12 ion-clock mr-5"></i>{{ news.created }}</li>
                 </ul>
               </div><!-- /for non mobile -->
+            </div>
+          </div>
+        </div>
 
-              <!-- only for mobile -->
+        <!-- only for mobile -->
+        <div class="mb-30 pr-30 card-view" style="padding: 0px!important">
+          <div class="container">
+            <div class="row">
               <div class="col-sm-6 d-block d-sm-none">
                 <h4><a href="{% url 'news_page' pk=news.pk %}"
                     style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
                     {{ news.title|truncatechars:100 }}</a></h4>
               </div><!-- right-area -->
               <div class="col-sm-6 d-block d-sm-none">
-                <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
+                <a href="{% url 'news_page' pk=news.pk %}" style="width: 100%;"><img src="/media/{{ news.image }}"
+                    style="width: 100%; height: auto;"></a>
                 <ul class="mtb-10 list-li-mr-20 color-lite-black " style="float: right; position: sticky; top: 100%;">
-                  <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
+                  <li style="margin-right: 0px;"><i class="font-12 ion-clock mr-5"></i>{{ news.created }}</li>
                 </ul>
               </div><!-- /only for mobile -->
             </div>
