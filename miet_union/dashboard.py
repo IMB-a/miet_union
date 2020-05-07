@@ -37,16 +37,16 @@ class CustomIndexDashBoard(Dashboard):
             children=[
                 modules.ModelList(
                     title=('Студенту'),
-                    models=('miet_union.models.HelpForProforg',
-                            'miet_union.models.HelpForStudentProforg',
-                            'miet_union.models.TheMainActivitiesOfProforg',),
+                    models=('documents.models.HelpForProforg',
+                            'documents.models.HelpForStudentProforg',
+                            'documents.models.TheMainActivitiesOfProforg',),
                 ),
                 modules.ModelList(
                     title=('Документы'),
-                    models=('miet_union.models.ProtectionOfPersonalInformation',    # noqa
-                            'miet_union.models.NormativeDocuments',
-                            'miet_union.models.CommissionsOfProfcom',
-                            'miet_union.models.UsefulLinks',),
+                    models=('documents.models.ProtectionOfPersonalInformation',    # noqa
+                            'documents.models.NormativeDocuments',
+                            'documents.models.CommissionsOfProfcom',
+                            'documents.models.UsefulLinks',),
                 ),
 
             ]

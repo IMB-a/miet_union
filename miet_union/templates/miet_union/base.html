@@ -24,75 +24,123 @@
   <header>
     <div class="bottom-menu">
       <div class="container">
-        <a class="menu-nav-icon pull-right" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
-        <ul class="main-menu" id="main-menu">
-          <li style="margin-right: 30px"><a href="{% url 'home' %}"><img
-                src="{% static 'images/emblema_white_min.png'%}" style="width: 60px;"></a>
-          </li>
-          <li><a href="{% url 'home' %}">Главная<i class=""></i></a>
-          </li>
-          <li class="drop-down"><a>Студенту<i class="ion-chevron-down"></i></a>
-            <ul class="drop-down-menu drop-down-inner">
-              <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
-              <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
-            </ul>
-          </li>
-          <li class="drop-down"><a>Мат. помощь<i class="ion-chevron-down"></i></a>
-            <ul class="drop-down-menu drop-down-inner">
-              <li><a href="/financial_assistance/student">Студенту</a></li>
-              <li><a href="/financial_assistance/graduate_student">Аспиранту</a></li>
-              <li><a href="/financial_assistance/worker">Работнику</a></li>
-            </ul>
-          </li>
-          <li class="drop-down"><a>Документы<i class="ion-chevron-down"></i></a>
-            <ul class="drop-down-menu drop-down-inner">
-              <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
-              <li><a href="{% url 'normative_documents' %}">Нормативные документы</a></li>
-              <li><a href="{% url 'commissions' %}">Комиссии профкома</a></li>
-              <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
-            </ul>
-          </li>
-          <li class="drop-down"><a>О нас<i class="ion-chevron-down"></i></a>
-            <ul class="drop-down-menu drop-down-inner">
-              <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
-              <li><a href="{% url 'prof_souz' %}">О профсоюзе</a></li>
-              <li><a href="{% url 'our_team' %}">Сотрудники</a></li>
-            </ul>
-          </li>
-          {% if user.is_authenticated %}
-          <li class="drop-down" style="float: right;"><a>
-              {% if user %}
-              {{ user.get_short_name }}
-              {% else %}
-              Имя не указано
-              {% endif %}
-              <i class="ion-chevron-down"></i></a>
-            {% else %}
-          <li class="drop-down" style="float: right;"><a>Гость<i class="ion-chevron-down"></i></a>
-            {% endif %}
-            <ul class="drop-down-menu drop-down-inner">
-              <li>
+        <!-- only for mobile -->
+        <div class="d-block d-sm-block d-md-none">
+          <div class="container">
+            <div class="row">
+              <div class="col-2">
+                <a class="menu-nav-icon pull-right" data-menu="#main-menu" href="#"
+                  style="margin-right: 0px; margin-left: 10px;"><i class="ion-navicon"></i></a>
+              </div>
+              <div class="col-10">
                 {% if user.is_authenticated %}
-                <a href="{% url 'my_account'%}">Личный кабинет</a></li>
-              {% else %}
-              <a class="nav-link" href="{% url 'login'%}">Личный кабинет</a>
-              {% endif %}
-              {% if user.is_superuser or user.is_staff %}
-              <li><a href="/admin/">Консоль администратора</a></li>
-              {% else %}
-              {% endif %}
-              <li>
-                {% if user.is_authenticated %}
-                <a class="nav-link" href="{% url 'logout'%} ">Выйти</a>
+                {% if user %}
+                <div class="float-right drop-down"><a href="{% url 'my_account' %}"
+                    style="line-height: 50px; margin-right: 10px;">{{ user.get_short_name|truncatechars:30 }}</a></div>
                 {% else %}
-                <a class="nav-link" href="{% url 'login'%} ">Войти</a>
+                Имя не указано
                 {% endif %}
-              </li>
-            </ul>
+                {% else %}
+                <div class="float-right"><a href="{% url 'login'%}"
+                    style="line-height: 50px; margin-right: 10px;">Войти</a></div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <ul class="main-menu" id="main-menu">
+            <li style="margin-right: 30px;"><a href="{% url 'home' %}"><img
+                  src="{% static 'images/emblema_white_min.png'%}" style="width: 60px;"></a>
+            </li>
+            <li><a href="{% url 'home' %}">Главная<i class=""></i></a>
+            </li>
+            <li class="drop-down"><a>Студенту<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
+                <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>Мат. помощь<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="/financial_assistance/student">Студенту</a></li>
+                <li><a href="/financial_assistance/graduate_student">Аспиранту</a></li>
+                <li><a href="/financial_assistance/worker">Работнику</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>Документы<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
+                <li><a href="{% url 'normative_documents' %}">Нормативные документы</a></li>
+                <li><a href="{% url 'commissions' %}">Комиссии профкома</a></li>
+                <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>О нас<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
+                <li><a href="{% url 'prof_souz' %}">О профсоюзе</a></li>
+                <li><a href="{% url 'our_team' %}">Сотрудники</a></li>
+              </ul>
+            </li>
+          </ul>
           </li>
           <div class="clearfix"></div>
-      </div><!-- container -->
-    </div><!-- bottom-menu -->
+        </div>
+        <!-- /only for mobile -->
+        <!-- for non mobile -->
+      </div>
+      <div class="container">
+        <div class="d-none d-sm-none d-md-block">
+          <a class="menu-nav-icon" data-menu="#main-menu" href="#"><i class="ion-navicon"></i></a>
+          <ul class="main-menu" id="main-menu">
+            <li style="margin-right: 30px; margin-left: 15px; "><a href="{% url 'home' %}"><img
+                  src="{% static 'images/emblema_white_min.png'%}" style="width: 60px;"></a>
+            </li>
+            <li><a href="{% url 'home' %}">Главная<i class=""></i></a>
+            </li>
+            <li class="drop-down"><a>Студенту<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'social_card' %}">Соц. карта</a></li>
+                <li><a href="{% url 'help_prof_org' %}">В помощь профоргу</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>Мат. помощь<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="/financial_assistance/student">Студенту</a></li>
+                <li><a href="/financial_assistance/graduate_student">Аспиранту</a></li>
+                <li><a href="/financial_assistance/worker">Работнику</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>Документы<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'personal_data_protection' %}">Защита персональных данных</a></li>
+                <li><a href="{% url 'normative_documents' %}">Нормативные документы</a></li>
+                <li><a href="{% url 'commissions' %}">Комиссии профкома</a></li>
+                <li><a href="{% url 'useful_links' %}">Полезные ссылки</a></li>
+              </ul>
+            </li>
+            <li class="drop-down"><a>О нас<i class="ion-chevron-down"></i></a>
+              <ul class="drop-down-menu drop-down-inner">
+                <li><a href="{% url 'prof_com' %}">О профкоме</a></li>
+                <li><a href="{% url 'prof_souz' %}">О профсоюзе</a></li>
+                <li><a href="{% url 'our_team' %}">Сотрудники</a></li>
+              </ul>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="drop-down" style="float: right;"><a href="{% url 'my_account' %}">
+                {% if user %}
+                {{ user.get_short_name }}
+                {% else %}
+                Имя не указано
+                {% endif %}
+              </a>
+              {% else %}
+            <li class="drop-down" style="float: right; margin-right: 15px;"><a href="{% url 'login' %}">Войти</a>
+              {% endif %}
+            </li>
+            <div class="clearfix"></div>
+
+        </div><!-- container -->
+      </div><!-- bottom-menu -->
   </header>
   {% if messages %}
   <div class="container">
