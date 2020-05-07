@@ -22,7 +22,7 @@
         </div><!-- card-view -->
         {% else %}
         <div class="mb-30 pr-30 card-view">
-          <div class="container" style="padding: 0px;">
+          <div class="container">
             <div class="row">
               <!-- for non mobile -->
               <div class="col-md-6 col-lg-6 d-none d-sm-none d-md-block" style="padding: 0px;">
@@ -43,7 +43,7 @@
                     style="font-weight: 500; font-size: 1.15em; padding-top: 15px; padding-bottom: 20px;">
                     {{ news.title|truncatechars:100 }}</a></h4>
               </div><!-- right-area -->
-              <div class="col-sm-6 d-block d-sm-none" style="padding: 0px;">
+              <div class="col-sm-6 d-block d-sm-none">
                 <img src="/media/{{ news.image }}" style="width: 100%; height: auto;">
                 <ul class="mtb-10 list-li-mr-20 color-lite-black " style="float: right; position: sticky; top: 100%;">
                   <li><i class="mr-5 font-12 ion-clock"></i>{{ news.created }}</li>
