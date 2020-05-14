@@ -16,7 +16,7 @@ cd ../..
 
 ## Installation app
 ``` bash
-pip install -r requirements.txt
+pip install -r requirements.txt # pip3 for linux
 python manage.py makemigrations
 python manage.py migrate
 ```
