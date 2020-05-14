@@ -319,7 +319,7 @@ def test_404(request):
 def unsubscribe_emailing(secret_key, is_registred_user):
     """
     Set is_email_subscription_confirmed to False
-    and delete EmailSubscription instance from db
+    or delete EmailSubscription instance from db
     """
     if is_registred_user:
         User.objects.filter(secret_key=secret_key).update(
@@ -335,13 +335,15 @@ def unsubscribe_emailing(secret_key, is_registred_user):
 
 def unsubscribe_emailing_in_url(request, secret_key):
     """
-    Delete EmailSubscription instance from db
+    Set is_email_subscription_confirmed to False
+    or delete EmailSubscription instance from db
     """
     if User.objects.filter(secret_key=secret_key):
         unsubscribe_emailing(secret_key, is_registred_user=True)
     else:
         unsubscribe_emailing(secret_key, is_registred_user=False)
     messages.success(request, 'Вы успешно отписались')
+    return redirect("home")
 
 
 def subscribe_confirm(request, secret_key):
@@ -406,7 +408,7 @@ def reset_password_page(request):
                     subject='Изменение пароля',
                     message="",
                     html_message=render_to_string(
-                        'miet_union/reset_password_email.html', context),
+                        'miet_union/email_reset_password.html', context),
                     from_email=settings.EMAIL_HOST_USER,
                     recipient_list=[email],
                     fail_silently=False,
@@ -440,7 +442,7 @@ def send_mail_to_subscribe_confirm(email, is_registred_user):
             message="""Пожалуйста подтвердите подписку на рассылку
                     новостей от профкома МИЭТ""",
             html_message=render_to_string(
-                'miet_union/subscribe_confirm.html', context),
+                'miet_union/email_subscribe_confirm.html', context),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False,
@@ -463,7 +465,7 @@ def send_mail_to_account_confirm(email):
             subject='Подтверждение email на сайте профкома МИЭТ',
             message="Пожалуйста подтвердите email для активации аккаунта",
             html_message=render_to_string(
-                'miet_union/user_confirm.html', context),
+                'miet_union/email_user_confirm.html', context),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False,
@@ -485,7 +487,7 @@ def send_reset_password_email(email):
             subject='Подтверждение email на сайте профкома МИЭТ',
             message="Пожалуйста подтвердите email для активации аккаунта",
             html_message=render_to_string(
-                'miet_union/reset_password.html', context),
+                'miet_union/email_reset_password.html', context),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False,
