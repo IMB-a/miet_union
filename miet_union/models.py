@@ -203,7 +203,7 @@ class EmailSubscription(models.Model):
                         subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
                         message='',
                         html_message=render_to_string(
-                            'miet_union/mail_template.html', context),
+                            'miet_union/email_news_template.html', context),
                         from_email=settings.EMAIL_HOST_USER,
                         recipient_list=[user.email],
                         fail_silently=False,
@@ -223,7 +223,7 @@ class EmailSubscription(models.Model):
                             subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
                             message='',
                             html_message=render_to_string(
-                                'miet_union/mail_template.html', context),
+                                'miet_union/email_news_template.html', context),
                             from_email=settings.EMAIL_HOST_USER,
                             recipient_list=[email_instance.email],
                             fail_silently=False,
