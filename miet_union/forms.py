@@ -29,7 +29,7 @@ class EmailingUnsubscribeForm(forms.Form):
                                        'placeholder': 'Электронная почта'}))
 
 
-class StudentFinancialAssistanceForm(forms.Form):
+class FinancialAssistanceForm(forms.Form):
     first_name = forms.CharField(
         label='Имя',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
