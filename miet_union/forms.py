@@ -49,12 +49,11 @@ class SearchNewsForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    email = forms.EmailField(
-        required=False,
+    email_login = forms.EmailField(
         label='',
         widget=forms.EmailInput(attrs={'class': 'form-control',
                                        'placeholder': 'Электронная почта'}))
-    password = forms.CharField(
+    password_login = forms.CharField(
         label='',
         widget=forms.PasswordInput(attrs={'class': 'form-control',
                                           'placeholder': 'Пароль'}))

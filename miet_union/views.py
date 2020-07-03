@@ -77,7 +77,9 @@ def render_login_page(request):
         return redirect(redirect_url)
 
     registration_form = UserRegistrationForm(request.POST or None)
-    validate_registration_form(request, registration_form)
+    redirect_url = validate_registration_form(request, registration_form)
+    if redirect_url:
+        return redirect(redirect_url)
 
     context = {'user_login_form': user_login_form,
                'registration_form': registration_form}
@@ -88,7 +90,10 @@ def render_login_page(request):
 def render_my_account_page(request):
     context = {}
     change_password_form = ChangePasswordForm(request.POST or None)
-    validate_change_password_form(request, change_password_form, context)
+    redirect_url = validate_change_password_form(
+        request, change_password_form, context)
+    if redirect_url:
+        return redirect(redirect_url)
 
     email_form = EmailingForm(request.POST or None)
     email_unsubscribe_form = EmailingUnsubscribeForm(
@@ -175,8 +180,8 @@ def reset_password(request, secret_key):
     """
     Set new password
     """
-    context = {}
     password_reset_form = PasswordResetForm(request.POST or None)
+    context = {'password_reset_form': password_reset_form}
     redirect_url = validate_password_reset_form(request, secret_key,
                                                 password_reset_form, context)
     if redirect_url:

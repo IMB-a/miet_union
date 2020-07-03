@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def make_paginator(request, all_news, context):
     """
-    123
+    Make paginator for news in home page
     """
     paginator = Paginator(all_news, 5)
 
