@@ -65,11 +65,11 @@ def validate_search_news_form(request, search_news_form,
 
 def validate_user_login_form(request, user_login_form):
     if user_login_form.is_valid():
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        if email and password:
-            user = authenticate(email=email.strip(),
-                                password=password.strip())
+        email_login = request.POST.get('email_login')
+        password_login = request.POST.get('password_login')
+        if email_login and password_login:
+            user = authenticate(email=email_login.strip(),
+                                password=password_login.strip())
             if user:
                 login(request, user)
                 rederict_path = 'home'
@@ -83,36 +83,41 @@ def validate_registration_form(request, registration_form):
     if registration_form.is_valid():
         email = request.POST.get('email')
         password = request.POST.get('password')
+        confirmed_password = request.POST.get('confirmed_password')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         middle_name = request.POST.get('middle_name')
         rank = request.POST.get('rank')
         user = User.objects.none()
         if email and password and first_name and last_name and \
-                middle_name and rank:
-            if not User.objects.filter(email=email):
-                user = User.objects.create_user(email=email,
-                                                first_name=first_name,
-                                                middle_name=middle_name,
-                                                last_name=last_name,
-                                                password=password,
-                                                is_active=True,
-                                                rank=rank,
-                                                is_staff=False,
-                                                is_admin=False)
-                user.save()
-                send_mail_to_account_confirm(user.email)
-                # login after registration
-                user = authenticate(email=email.strip(),
-                                    password=password.strip())
-                login(request, user)
-                messages.info(request, '''Пожалуйста,
-                    подтвердите акканут на почте.
-                    Иначе не сможите восстановить пароль.''')
-                return '/my_account'
+                middle_name and rank and confirmed_password:
+            if password == confirmed_password:
+                if not User.objects.filter(email=email):
+                    user = User.objects.create_user(email=email,
+                                                    first_name=first_name,
+                                                    middle_name=middle_name,
+                                                    last_name=last_name,
+                                                    password=password,
+                                                    is_active=True,
+                                                    rank=rank,
+                                                    is_staff=False,
+                                                    is_admin=False)
+                    user.save()
+                    send_mail_to_account_confirm(user.email)
+                    # login after registration
+                    user = authenticate(email=email.strip(),
+                                        password=password.strip())
+                    login(request, user)
+                    messages.info(request, '''Пожалуйста,
+                        подтвердите акканут на почте.
+                        Иначе не сможите восстановить пароль.''')
+                    return '/my_account'
+                else:
+                    messages.error(request, 'Этот email уже занят')
+                    return '/login'
             else:
-                messages.error(request, 'Этот email уже занят')
-                return '/login'
+                messages.error(request, 'Пароли не совпадают')
+                return '/login' 
 
 
 def validate_financial_assistance_form(request, financial_assistance_form,
@@ -165,13 +170,23 @@ def validate_change_password_form(request, change_password_form, context):
                                     current_password_from_requst)
         if matchcheck:
             if new_password == confirmed_new_password:
+                # change password
                 user.set_password(new_password)
                 user.save()
                 messages.success(request, 'Пароль изменен')
+                # authenticate user
+                user = authenticate(email=user,
+                                    password=new_password)
+                if user:
+                    # login with new password
+                    login(request, user)
+                return '/my_account'
             else:
                 messages.error(request, 'Пароли не совпадают')
+                return '/my_account'
         else:
             messages.error(request, 'Неправельный пароль')
+            return '/my_account'
 
 
 def validate_email_form_in_my_account(request, email_form,
