@@ -354,15 +354,15 @@
                     <tr>
                       <td class="pull-left mobile-header-padding-left" style="vertical-align: middle;">
                         <a href=""><img width="50" height="50"
-                            src="http://hearthstowner.pythonanywhere.com/static/images/emblema_original.png"
+                            src="http://{{ ALLOWED_HOSTS }}/static/images/emblema_original.png"
                             alt="logo"></a>
                       </td>
                       <td class="pull-right mobile-header-padding-right" style="color: #4d4d4d;">
                         <a href="https://vk.com/profcommiet"><img width="33" height="33"
-                            src="http://hearthstowner.pythonanywhere.com/static/images/vk.png" alt="vk"
+                            src="http://{{ ALLOWED_HOSTS }}/static/images/vk.png" alt="vk"
                             style="margin-right: 5px;" /></a>
                         <a href="https://www.instagram.com/profcom_miet/"><img width="33" height="33"
-                            src="http://hearthstowner.pythonanywhere.com/static/images/instagram.png" alt="rss"
+                            src="http://{{ ALLOWED_HOSTS }}/static/images/instagram.png" alt="rss"
                             style="margin-right: 5px;" /></a>
                       </td>
                     </tr>
@@ -405,7 +405,7 @@
                         <tr>
                           <td class="button">
                             <div>
-                              <a href="http://127.0.0.1:8000/subscribe/{{secret_key}}"
+                              <a href="http://{{ ALLOWED_HOSTS }}/subscribe/{{secret_key}}"
                                 style="background-color:#0f45c7;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">Подписаться</a>
                             </div>
                           </td>

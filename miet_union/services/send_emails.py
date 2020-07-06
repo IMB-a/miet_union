@@ -22,7 +22,7 @@ def reset_password_page(request):
     """
     Set new password
     """
-    context = {}
+    context = {'ALLOWED_HOSTS': settings.ALLOWED_HOSTS, }
     email_form = EmailingForm(request.POST or None)
     if email_form.is_valid():
         email = request.POST.get('email')
