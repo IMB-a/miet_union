@@ -146,7 +146,7 @@ documents/migrations/*_auto*.py
 # /media/
 
 # Django STATIC_ROOT
-# /static/
+/static/
 
 # Windows thumbnail cache
 Thumbs.db
