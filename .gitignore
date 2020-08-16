@@ -161,3 +161,6 @@ pdf/sourses/*
 
 # Email config
 email_config.py
+
+# vim config
+.vim/coc-settings.json
