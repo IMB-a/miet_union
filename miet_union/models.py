@@ -200,7 +200,7 @@ class EmailSubscription(models.Model):
                 try:
                     context.update({'secret_key': user.secret_key})
                     send_mail(
-                        subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
+                        subject='''Новая новость на сайте профкома института МИЭТ''',   # noqa E501
                         message='',
                         html_message=render_to_string(
                             'miet_union/email_news_template.html', context),
@@ -220,7 +220,7 @@ class EmailSubscription(models.Model):
                         context.update(
                             {'secret_key': email_instance.secret_key})
                         send_mail(
-                            subject='''Новоя новость на сайте профкома института МИЭТ''',   # noqa E501
+                            subject='''Новая новость на сайте профкома института МИЭТ''',   # noqa E501
                             message='',
                             html_message=render_to_string(
                                 'miet_union/email_news_template.html',
