@@ -13,12 +13,18 @@ source venv/Scripts/bin/activate
 
 ## Installation app (linux)
 ``` bash
+cat .env.example > .env
+```
+fill in environment variables
+
+``` bash
 pip3 install -r requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
+
 ```
 
 ## Usage
 ``` bash
-python3 manage.py runserver
+python3 manage.py runserver <ip>:<port>
 ```
